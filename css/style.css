@@ -1,0 +1,66 @@
+/*.wrapper {*/
+/*    padding: 0;*/
+/*}*/
+
+.sec-features {
+    width: 100%;
+}
+
+.sec-features .row:nth-of-type(n+2) {
+    margin-top: 160px;
+}
+
+.sec-features .row:last-of-type {
+    margin-bottom: 160px;
+}
+
+
+.feature-icon {
+    max-width: 150px;
+}
+
+
+.sec-testimonials .carousel-control-prev, .sec-testimonials .carousel-control-next {
+    color: black;
+}
+
+
+.sec-testimonials .carousel-indicators {
+    bottom: -30px;
+}
+
+.sec-testimonials .carousel-indicators li {
+    background: rgba(33, 33, 33, .1);
+}
+
+.sec-testimonials .carousel-indicators li:focus,
+.sec-testimonials .carousel-indicators li:hover {
+    background: rgba(33, 33, 33, .5);
+}
+
+
+.sec-testimonials .carousel-indicators .active {
+    background: rgba(33, 33, 33, .75);
+}
+
+.sec-testimonials .carousel-control-next,
+.sec-testimonials .carousel-control-prev {
+    color: #212121;
+}
+
+.sec-testimonials .carousel-control-next:focus, .sec-testimonials .carousel-control-prev:focus,
+.sec-testimonials .carousel-control-next:hover, .sec-testimonials .carousel-control-next:hover {
+    color: #111;
+}
+
+
+
+
+/* View Profile Page CSS */
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
