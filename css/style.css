@@ -208,6 +208,10 @@
     height: 250px;
 }
 
+.btnPremium, .btnPremium:hover {
+    color: #fff;
+}
+
 /* Edit Profile Page CSS */
 
 #leftPanel {

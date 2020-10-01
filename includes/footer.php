@@ -1,3 +1,12 @@
+<?php
+include_once("./helper/helperFunctions.php");
+$userId = 0;
+$user = [];
+if (isset($_SESSION["userId"])) {
+    $userId = !IsVariableIsSetOrEmpty($_SESSION['userId']) ? $_SESSION['userId'] : 0;
+    $user = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION['user']) ? $_SESSION['user'] : [];
+}
+?>
 <footer class="mt-10 bg-dark">
     <div class="container">
         <div class="row ">
@@ -8,13 +17,25 @@
                     </h3>
 
                     <p class="footer-links font-weight-bold">
-                        <a class="text-white" href="#">Home</a>
+                        <a class="text-white" href="./index.php">Home</a>
                         |
-                        <a class="text-white" href="#">View Profiles</a>
-                        |
-                        <a class="text-white" href="#">Login</a>
-                        |
-                        <a class="text-white" href="#">Register</a>
+                        <a class="text-white" href="./view-profiles.php">View Profiles</a>
+                        <?php
+                        if ($userId === 0) {
+                            ?>
+                            |
+                            <a class="text-white" href="./login.php">Login</a>
+                            |
+                            <a class="text-white" href="./register.php">Register</a>
+                            <?php
+                        } else {
+                            ?>
+                            |
+                            <a class="text-white" href="./edit-profile.php">Edit Profile</a>
+                            <?php
+                        }
+                        ?>
+
                     </p>
                     <p class="text-light py-4 mb-4">&copy;<?php echo date("Y"); ?> ONLINE DATING</p>
                 </div>

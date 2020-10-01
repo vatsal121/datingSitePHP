@@ -1,4 +1,12 @@
-
+<?php
+include_once("./helper/helperFunctions.php");
+$userId = 0;
+$user = [];
+if (isset($_SESSION["userId"])) {
+    $userId = !IsVariableIsSetOrEmpty($_SESSION['userId']) ? $_SESSION['userId'] : 0;
+    $user = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION['user']) ? $_SESSION['user'] : [];
+}
+?>
 <header>
     <nav class="navbar navbar-dark bg-dark navbar-expand-sm">
         <a class="navbar-brand" href="./index.php">
@@ -11,14 +19,25 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbar-list-2">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <?php
+                if ($userId !== 0 && count($user) > 0) {
+                    ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"
+                           onclick="return false">Hello <?= $user["firstName"] . " " . $user["lastName"] ?>!</a>
+                    </li>
+                    <?php
+                }
+                ?>
+
+                <li class="nav-item">
                     <a class="nav-link" href="./index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="./view-profiles.php">View Profiles</a>
                 </li>
                 <?php
-                if (isset($_SESSION['userId']) && !empty($_SESSION['userId']) && $_SESSION['userId'] !== 0) {
+                if ($userId !== 0) {
                     ?>
                     <li class="nav-item">
                         <a class="nav-link" href="./edit-profile.php">Edit-Profile</a>

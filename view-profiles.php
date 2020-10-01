@@ -2,9 +2,20 @@
 session_start();
 require_once("./Connector/DbConnectorPDO.php");
 require("./helper/helperFunctions.php");
-$userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
-$userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
 $connection = getConnection();
+$userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
+//if ($userId !== 0) {
+//    $q = "SELECT * from profile WHERE id =:userId";
+//    $s = $connection->prepare($q);
+//    $s->bindParam(':userId', $userId);
+//    $s->execute();
+//    $row = $s->fetch(PDO::FETCH_ASSOC);
+//
+//    $_SESSION['user'] = $row;
+//    $userObj = $row;
+//}
+$userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
+
 $isSearchCriteria = false;
 $firstName = "";
 $lastName = "";
@@ -15,7 +26,7 @@ if ($userId !== 0) {
     $query .= "where id <> :userId";
 }
 
-if (isset($_POST["Search"]) && !empty($_POST["Search"])) {
+if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
 
     $searchCount = 0;
     $firstName = $_POST["firstName"];
@@ -24,25 +35,25 @@ if (isset($_POST["Search"]) && !empty($_POST["Search"])) {
     $ageToSearch = $_POST["age"];
     $searchQuery = "";
 
-    if (isset($firstName) && !empty($firstName)) {
+    if (!IsVariableIsSetOrEmpty($firstName)) {
         $searchQuery .= " firstName like '%':fname'%'";
         $searchCount++;
     }
-    if (isset($lastName) && !empty($lastName)) {
+    if (!IsVariableIsSetOrEmpty($lastName)) {
         if ($searchCount > 0) {
             $searchQuery .= " and ";
         }
         $searchQuery .= " lastName like '%':lname'%'";
         $searchCount++;
     }
-    if (isset($gender) && !empty($gender)) {
+    if (!IsVariableIsSetOrEmpty($gender)) {
         if ($searchCount > 0) {
             $searchQuery .= " and ";
         }
         $searchQuery .= " gender=:gender";
         $searchCount++;
     }
-    if (isset($ageToSearch) && !empty($ageToSearch)) {
+    if (!IsVariableIsSetOrEmpty($ageToSearch)) {
         $ageToSearch = intval($ageToSearch);
         if ($searchCount > 0) {
             $searchQuery .= " and ";
@@ -196,12 +207,11 @@ $profileList = $stmt->fetchAll();
         <?php
         if (!empty($userObj)) {
             if ($userObj["user_role"] === "regular") {
-
                 ?>
                 <div class="row mb-10">
                     <div class="col-md-12">
-                        <input type="submit" class="btn btn-warning w-100" value="Become a premium member"
-                               name="BecomePremium"/>
+                        <a href="./become-premium-member.php" class="btn btn-warning w-100 btnPremium"
+                           name="BecomePremium">Become a premium member</a>
                     </div>
                 </div>
                 <?php
@@ -250,19 +260,64 @@ $profileList = $stmt->fetchAll();
                             <?php
                             if ($userId === 0) {
                                 ?>
-                                <button class="btn btn-success" data-toggle="modal" data-target="#loginModal">
-                                    Send Message
-                                </button>
-                                <button class="btn btn-danger" data-toggle="modal" data-target="#loginModal">
-                                    Favourite
-                                </button>
+                                <div class="row mb-10">
+                                    <div class="col-md-12 col-sm-12">
+                                        <button class="btn btn-success w-100" data-toggle="modal"
+                                                data-target="#loginModal">
+                                            Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <button class="btn btn-info w-100" data-toggle="modal"
+                                                data-target="#loginModal">
+                                            Send wink
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <button class="btn btn-danger w-100" data-toggle="modal"
+                                                data-target="#loginModal">
+                                            Favourite
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <?php
                             } else {
                                 ?>
-                                <a href="#" class="btn btn-success">
-                                    Send Message
-                                </a>
-                                <a href="#" class="btn btn-danger">Favourite</a>
+                                <div class="row mb-10">
+                                    <div class="col-md-12 col-sm-12">
+                                        <button class="btn btn-success w-100">
+                                            Send Message
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                        <button class="btn btn-info w-100">
+                                            Send wink
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6 col-sm-12">
+                                        <?php
+                                        if ($userObj["user_role"] === "regular") {
+                                            ?>
+                                            <button class="btn btn-danger w-100" data-toggle="modal"
+                                                    data-target="#addToFavouriteModal">
+                                                Favourite
+                                            </button>
+
+                                            <?php
+                                        } else {
+                                            ?>
+                                            <button class="btn btn-danger w-100">
+                                                Favourite
+                                            </button>
+                                            <?php
+                                        } ?>
+                                    </div>
+                                </div>
                                 <?php
                             }
                             ?>
@@ -320,6 +375,26 @@ $profileList = $stmt->fetchAll();
         </div>
     </div>
 
+    <div class="modal fade" id="addToFavouriteModal" tabindex="-1" role="dialog" aria-labelledby="addToFavouriteModal"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addToFavouriteModalTitle">Oops!!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Hey! You must be a premium member to add users to your favourite list.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Become a premium member</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function () {
             $("#ageInputId").on('input', function () {
