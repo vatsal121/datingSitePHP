@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse justify-content-end" id="navbar-list-2">
             <ul class="navbar-nav">
                 <li class="nav-item active">
-                    <a class="nav-link" href="./index.php">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="./index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="./view-profiles.php">View Profiles</a>
@@ -20,6 +20,9 @@
                 <?php
                 if (isset($_SESSION['userId']) && !empty($_SESSION['userId']) && $_SESSION['userId'] !== 0) {
                     ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="./edit-profile.php">Edit-Profile</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="./logout.php">Logout</a>
                     </li>

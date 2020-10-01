@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (isset($_SESSION['userId'])){
+    $users = $_SESSION['user'];
+
+}
 
 ?>
 <!doctype html>
@@ -19,7 +23,7 @@ session_start();
     include("./includes/nav-bar.php")
 
     ?>
-    <h1>Welcome, <?php echo $_SESSION['name']?></h1>
+    <h1>Welcome, <?php echo $users['firstName']; ?></h1>
     <!-- footer -->
     <?php include("./includes/footer.php") ?>
     <!-- end of footer -->
