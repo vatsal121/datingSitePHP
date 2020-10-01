@@ -1,8 +1,97 @@
 <?php
 session_start();
-$userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
 require_once("./Connector/DbConnectorPDO.php");
-//$connection = getConnection();
+require("./helper/helperFunctions.php");
+$userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
+$userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
+$connection = getConnection();
+$isSearchCriteria = false;
+$firstName = "";
+$lastName = "";
+$gender = "";
+$ageToSearch = "18";
+$query = "select * from profile ";
+if ($userId !== 0) {
+    $query .= "where id <> :userId";
+}
+
+if (isset($_POST["Search"]) && !empty($_POST["Search"])) {
+
+    $searchCount = 0;
+    $firstName = $_POST["firstName"];
+    $lastName = $_POST["lastName"];
+    $gender = $_POST["gender"];
+    $ageToSearch = $_POST["age"];
+    $searchQuery = "";
+
+    if (isset($firstName) && !empty($firstName)) {
+        $searchQuery .= " firstName like '%':fname'%'";
+        $searchCount++;
+    }
+    if (isset($lastName) && !empty($lastName)) {
+        if ($searchCount > 0) {
+            $searchQuery .= " and ";
+        }
+        $searchQuery .= " lastName like '%':lname'%'";
+        $searchCount++;
+    }
+    if (isset($gender) && !empty($gender)) {
+        if ($searchCount > 0) {
+            $searchQuery .= " and ";
+        }
+        $searchQuery .= " gender=:gender";
+        $searchCount++;
+    }
+    if (isset($ageToSearch) && !empty($ageToSearch)) {
+        $ageToSearch = intval($ageToSearch);
+        if ($searchCount > 0) {
+            $searchQuery .= " and ";
+        }
+        if ($ageToSearch === 18) {
+            $searchQuery .= " (YEAR(CURDATE()) - YEAR(birthDate)) >=:age";
+        } else {
+            $searchQuery .= " (YEAR(CURDATE()) - YEAR(birthDate)) BETWEEN  18 and :age";
+        }
+
+
+        $searchCount++;
+    }
+
+    if ($searchCount > 0) {
+        $isSearchCriteria = true;
+        if ($userId === 0) {
+            $query .= " where " . $searchQuery;
+        } else {
+            $query .= " and (" . $searchQuery . ")";
+        }
+    }
+}
+
+$stmt = $connection->prepare($query);
+if ($userId !== 0) {
+    $stmt->bindParam(':userId', $userId);
+}
+
+if ($isSearchCriteria === true) {
+    if (!empty($firstName)) {
+        $stmt->bindParam(':fname', $firstName);
+    }
+    if (!empty($lastName)) {
+        $stmt->bindParam(':lname', $lastName);
+    }
+    if (!empty($gender)) {
+        $stmt->bindParam(':gender', $gender);
+    }
+    if (!empty($ageToSearch)) {
+        $stmt->bindParam(':age', $ageToSearch);
+    }
+
+
+}
+$stmt->execute();
+//$profileList = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+$profileList = $stmt->fetchAll();
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -11,9 +100,9 @@ require_once("./Connector/DbConnectorPDO.php");
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>View Profiles</title>
     <?php include("./includes/header.php") ?>
     <link href="./css/style.css" rel="stylesheet" type="text/css">
+    <title>View Profiles</title>
 </head>
 <body>
 <div class="container-fluid wrapper">
@@ -25,50 +114,189 @@ require_once("./Connector/DbConnectorPDO.php");
     <div class="mb15">
         <div class="row mt-10 mb-10">
             <div class="col-md-12 text-center">
-                <h2>View Profiles</h2>
+                <h2>Search Profiles</h2>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card" style="width: 18rem;">
-                    <img class="card-img-top"
-                         src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22318%22%20height%3D%22180%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20318%20180%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_15c36ed212f%20text%20%7B%20fill%3Argba(255%2C255%2C255%2C.75)%3Bfont-weight%3Anormal%3Bfont-family%3AHelvetica%2C%20monospace%3Bfont-size%3A16pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_15c36ed212f%22%3E%3Crect%20width%3D%22318%22%20height%3D%22180%22%20fill%3D%22%23777%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22118.0859375%22%20y%3D%2297.2%22%3E318x180%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E"
-                         alt="Card image cap">
-                    <div class="card-body">
-                        <h5 class="card-title">Name: Test User</h5>
-                        <p class="card-text">Likes to build everything.</p>
+        <div class="row mb-10">
+            <div class="col-md-12">
+                <form method="post" action="view-profiles.php">
+                    <div class="form-row mb-10">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="firsName">Search by first name</label>
+                                <input name="firstName" id="firstName" type="text" class="form-control"
+                                       placeholder="First name" value="<?= $firstName ?>">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="lastName">Search by last name</label>
+                                <input name="lastName" id="lastName" type="text" class="form-control"
+                                       placeholder="Last name" value="<?= $lastName ?>">
+                            </div>
+                        </div>
                     </div>
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">Age: 25</li>
-                        <li class="list-group-item">Location: Montreal</li>
-                        <li class="list-group-item">Likes: ABCD, EFGH, IJKL</li>
-                        <li class="list-group-item">Interested in: Female</li>
-                        <li class="list-group-item">Looking for : Longterm Relation, Short term</li>
-                    </ul>
-                    <div class="card-body">
-                        <?php
-                        if ($userId === 0) {
+                    <div class="form-row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="gender">Search by gender</label>
+                                <select id="gender" class="form-control" name="gender">
+                                    <option value="" <?php if (empty($gender)) {
+                                        echo "selected";
+                                    } ?>>-- Select gender
+                                        --
+                                    </option>
+                                    <option value="male" <?php if ($gender === "male") {
+                                        echo "selected";
+                                    } ?>>Male
+                                    </option>
+                                    <option value="female" <?php if ($gender === "female") {
+                                        echo "selected";
+                                    } ?>>Female
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="formControlRange">Select age range between to search</label>
+
+                                <input type="range" min="18" value="<?= $ageToSearch ?>" max="90"
+                                       class="form-control-range" name="age"
+                                       id="ageInputId">
+                                <output name="ageOutputName" id="ageOutputId">Search profiles with age above 18</output>
+                            </div>
+
+                            <!--                            <select class="form-control" name="age">-->
+                            <!--                                <option value="">-- Select age --</option>-->
+                            <!--                                --><?php
+                            //                                for ($i = 18; $i <= 90; $i++) { ?>
+                            <!--                                    <option value="--><? //= $i ?><!--">-->
+                            <!--                                        --><? //= $i
+                            ?><!--</option>-->
+                            <!--                                    --><?php
+                            //                                }
+                            //
                             ?>
-                            <button class="btn btn-success" data-toggle="modal" data-target="#loginModal">
-                                Send Message
-                            </button>
-                            <button class="btn btn-danger" data-toggle="modal" data-target="#loginModal">
-                                Favourite
-                            </button>
+                            <!--                            </select>-->
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-10 col-sm-12">
+                            <input type="submit" name="Search" value="Search" class="btn btn-dark w-100"/>
+                        </div>
+                        <div class="col-md-2 col-sm-12">
+                            <input type="submit" name="Reset" value="Reset filters" class="btn btn-info w-100"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <?php
+        if (!empty($userObj)) {
+            if ($userObj["user_role"] === "regular") {
+
+                ?>
+                <div class="row mb-10">
+                    <div class="col-md-12">
+                        <input type="submit" class="btn btn-warning w-100" value="Become a premium member"
+                               name="BecomePremium"/>
+                    </div>
+                </div>
+                <?php
+            }
+        }
+        ?>
+
+
+        <?php
+        if (count($profileList) > 0) {
+            $counter = 0;
+            foreach ($profileList as $profile) {
+                $counter++;
+                if ($counter === 1) {
+                    echo '<div class="row">';
+                }
+                ?>
+                <div class="col-md-3">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top"
+                             src="<?= $profile["imgUrl"] ?>"
+                             alt="profile image">
+                        <div class="card-body">
+                            <h5 class="card-title">Name: <?= $profile["firstName"] . ' ' . $profile['lastName'] ?></h5>
+                            <p class="card-text"><?= $profile["bio"] ?></p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Age: <?php
+                                $bday = new DateTime($profile["birthDate"]); // Your date of birth
+                                $today = new Datetime(date('y-d-m'));
+                                $diff = $today->diff($bday);
+                                echo "$diff->y years"
+                                ?></li>
+                            <li class="list-group-item">Location: Montreal</li>
+                            <li class="list-group-item">
+                                Gender:
+                                <span style="text-transform: capitalize">
+                                    <?= $profile["gender"] ?>
+                                </span>
+                            </li>
+                            <!--                            <li class="list-group-item">Likes: ABCD, EFGH, IJKL</li>-->
+                            <!--                            <li class="list-group-item">Interested in: Female</li>-->
+                            <!--                            <li class="list-group-item">Looking for : Longterm Relation, Short term</li>-->
+                        </ul>
+                        <div class="card-body">
+                            <?php
+                            if ($userId === 0) {
+                                ?>
+                                <button class="btn btn-success" data-toggle="modal" data-target="#loginModal">
+                                    Send Message
+                                </button>
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#loginModal">
+                                    Favourite
+                                </button>
+                                <?php
+                            } else {
+                                ?>
+                                <a href="#" class="btn btn-success">
+                                    Send Message
+                                </a>
+                                <a href="#" class="btn btn-danger">Favourite</a>
+                                <?php
+                            }
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                <?php
+                if ($counter === 4) {
+                    echo '</div>';
+                    $counter = 0;
+                }
+            }
+        } else {
+            ?>
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="alert alert-info text-center" role="alert">
+                        <?php
+                        if ($userId !== 0) {
+                            ?>
+                            No profiles found!.
                             <?php
                         } else {
                             ?>
-                            <a href="#" class="btn btn-success">
-                                Send Message
-                            </a>
-                            <a href="#" class="btn btn-danger">Favourite</a>
-                            <?php
-                        }
-                        ?>
+                            No profiles found!. Click <a href="./register.php">here</a> to register!.
+                        <?php } ?>
                     </div>
                 </div>
+
             </div>
-        </div>
+            <?php
+        }
+        ?>
+
     </div>
 
     <!-- Modal -->
@@ -91,6 +319,21 @@ require_once("./Connector/DbConnectorPDO.php");
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function () {
+            $("#ageInputId").on('input', function () {
+                if (parseInt($("#ageInputId").val()) < 18) {
+                    $("#ageInputId").val("18");
+                }
+                if (parseInt($("#ageInputId").val()) === 18) {
+                    $("#ageOutputId").val("Search profiles above age " + $("#ageInputId").val());
+                } else {
+                    $("#ageOutputId").val("Search between age 18 and " + $("#ageInputId").val());
+                }
+            })
+        });
+    </script>
     <!-- footer -->
 
     <?php include("./includes/footer.php") ?>

@@ -11,6 +11,7 @@ if ($userId !== 0) {
 $errors = array();
 $image_uploaded = false;
 $imageURL = "./images/user_images/";
+$registerSuccessfully = false;
 if (isset($_POST['Submit'])) {
     $email = $_POST['email'];
     $firstName = $_POST["firstName"];
@@ -40,10 +41,14 @@ if (isset($_POST['Submit'])) {
                 $imageURL = $imageURL . $file_name;
                 move_uploaded_file($file_tmp, $imageURL);
                 $image_uploaded = true;
-
-                $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$dateOfBirth','$gender','$imageURL','regular')";
-                $stmt = $connection->prepare($query);
-
+                try {
+                    $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$dateOfBirth','$gender','$imageURL','regular')";
+                    $stmt = $connection->prepare($query);
+                    $stmt->execute();
+                    $registerSuccessfully = true;
+                } catch (PDOException $exception) {
+                    throw $exception;
+                }
 
             }
         }
@@ -73,11 +78,11 @@ if (isset($_POST['Submit'])) {
 
             <div class="col-lg-10 col-xl-9 mx-auto">
                 <div class="row mt-5">
-                    <?php
-                    // if any errors are there display them
-                    if (count($errors) > 0) {
-                        ?>
-                        <div class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-sm-12 col-xs-12">
+                        <?php
+                        // if any errors are there display them
+                        if (count($errors) > 0) {
+                            ?>
                             <div class="alert alert-danger" role="alert">
                                 <p>List of errors: </p>
                                 <ul>
@@ -87,9 +92,14 @@ if (isset($_POST['Submit'])) {
                                     <?php } ?>
                                 </ul>
                             </div>
-                        </div>
-
-                    <?php } ?>
+                        <?php } elseif ($registerSuccessfully === true) {
+                            ?>
+                            <div class="alert alert-success" role="alert">
+                                <p>Registered Successfully. Click <a href="./login.php">here</a> to login.</p>
+                            </div>
+                            <?php
+                        } ?>
+                    </div>
                 </div>
                 <div class="card card-signin flex-row ">
 
@@ -167,7 +177,7 @@ if (isset($_POST['Submit'])) {
                                 </button>
                             </div>
                             <button name="Submit" id="Submit"
-                                    class="btn btn-lg btn-primary btn-block text-uppercase"  type="submit">
+                                    class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
                                 Register
                             </button>
                             <div class="sign-up">
