@@ -7,6 +7,7 @@ $userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION[
 if ($userId !== 0) {
     header("Location: ./index.php");
 }
+
 $errors = array();
 $image_uploaded = false;
 $imageURL = "./images/user_images/";
@@ -41,15 +42,7 @@ if (isset($_POST['Submit'])) {
                 $image_uploaded = true;
 
                 $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$dateOfBirth','$gender','$imageURL','regular')";
-                $connection->query($query);
-
-                //$last_inserted_id = $connection->insert_id;
-//                    if ($last_inserted_id === 0) {
-//                        if (file_exists($imageURL)) {
-//                            unlink($imageURL);
-//                        }
-//                        array_push($errors, 'Error registering. Please try again');
-//                    }
+                $stmt = $connection->prepare($query);
 
 
             }
@@ -108,7 +101,7 @@ if (isset($_POST['Submit'])) {
                         <form class="form-signin" action="register.php" method="post" enctype="multipart/form-data">
                             <div class="form-label-group">
                                 <input type="email" name="email" id="inputEmail" class="form-control"
-                                       placeholder="Email address"
+                                       placeholder="Email address" pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
                                        required autofocus>
                                 <label for="inputEmail">Email address</label>
                             </div>
@@ -146,7 +139,7 @@ if (isset($_POST['Submit'])) {
 
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="gender" id="gender"
-                                           value="male" required>
+                                           value="male" checked required>
                                     <label class="form-check-label" for="male">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
@@ -174,7 +167,7 @@ if (isset($_POST['Submit'])) {
                                 </button>
                             </div>
                             <button name="Submit" id="Submit"
-                                    class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">
+                                    class="btn btn-lg btn-primary btn-block text-uppercase"  type="submit">
                                 Register
                             </button>
                             <div class="sign-up">
@@ -192,7 +185,9 @@ if (isset($_POST['Submit'])) {
     <!-- end of footer -->
 </div>
 
+
 <script>
+
     function removePreview() {
         $('#img_preview').attr('src', "");
         $(".preview-img-container").css("display", "none");
