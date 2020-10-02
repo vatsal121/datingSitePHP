@@ -4,6 +4,9 @@ require_once("./Connector/DbConnectorPDO.php");
 require("./helper/helperFunctions.php");
 $userId = isset($_SESSION["userId"]) && !empty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
 $userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
+if ($userObj["user_role"] === "premium" || $userId === 0) {
+    header("location:./view-profiles.php");
+}
 $connection = getConnection();
 if (isset($_POST["checkout"]) && !IsVariableIsSetOrEmpty($_POST["checkout"])) {
     $query = "update profile set user_role='premium' where id=:userId";
