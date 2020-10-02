@@ -123,7 +123,7 @@ if (isset($_POST['Submit'])) {
                             </div>
                             <div class="form-label-group">
                                 <input type="text" id="lastName" name="lastName" class="form-control"
-                                       placeholder="Last Name" required autofocus>
+                                       placeholder="Last Name" required>
                                 <label for="lastName">Last Name</label>
                             </div>
                             <hr>
@@ -163,7 +163,7 @@ if (isset($_POST['Submit'])) {
                                 <div class="custom-file">
                                     <input accept="image/*" type="file" name="fileUpload"
                                            class="form-control custom-file-input"
-                                           id="fileUpload">
+                                           id="fileUpload" required>
                                     <label class="custom-file-label" for="fileUpload">Upload Image..</label>
                                 </div>
                             </div>

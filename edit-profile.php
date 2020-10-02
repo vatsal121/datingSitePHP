@@ -15,6 +15,8 @@ $bio = '';
 $gender = '';
 $image = '';
 $birthday = '';
+$image_uploaded = false;
+$imageURL = "./images/user_images/";
 if ($_SESSION['userId']) {
     $userId = $_SESSION['userId'];
     $users = $_SESSION['user'];
@@ -41,11 +43,52 @@ if ($_SESSION['userId']) {
         $today = new Datetime(date('y-d-m'));
         $diff = $today->diff($birthday);
 
+    }
 
+    if(isset($_POST["resetPassword"])){
+        $oldpassword = $_POST['oldPassword'];
+        $NewPassword = $_POST['newPassword'];
+        $ConfirmPassword = $_POST['confirmPassword'];
+        if($password === $oldpassword){
+            if($NewPassword === $ConfirmPassword){
+                $query3 = "UPDATE profile SET password = '$NewPassword' WHERE id = '$id'";
+                $stmt3 = $connection->prepare($query3);
+                $stmt3->execute();
+                $count3 = $stmt3->rowCount();
+            }else{
+                array_push($errors, 'Couldnt match the New Password and Confirm Password');
+            }
+        }else{
+            array_push($errors, 'Old Password is incorrect');
+        }
     }
 
     if (isset($_POST["uploadImage"]) && isset($_FILES["newImageFileUploadControl"])) {
+        $file_name = $email . "_" . $_FILES['newImageFileUploadControl']['name'];
+        $file_size = $_FILES['newImageFileUploadControl']['size'];
+        $file_tmp = $_FILES['newImageFileUploadControl']['tmp_name'];
+        $file_type = $_FILES['newImageFileUploadControl']['type'];
+        $array = explode('.', $_FILES['newImageFileUploadControl']['name']);
+        $file_ext = strtolower(end($array));
 
+        $extensions = array("jpeg", "jpg", "png", "gif");
+
+        if ($file_size > 5120000) {
+            array_push($errors, 'File size must be less than 5 MB');
+        }
+
+        $imageURL = $imageURL . $file_name;
+        move_uploaded_file($file_tmp, $imageURL);
+        $image_uploaded = true;
+        try {
+            $query2 = "UPDATE profile SET imgUrl = '$imageURL' WHERE id = '$id'";
+            $stmt2 = $connection->prepare($query2);
+            $stmt2->execute();
+            $count2 = $stmt2->rowCount();
+        }catch (PDOException $exception) {
+            throw $exception;
+        }
+        header("Location: ./edit-profile.php");
     }
 
 
@@ -107,12 +150,15 @@ if ($_SESSION['userId']) {
             <div class="col-md-4 well" id="leftPanel">
                 <div class="row">
                     <div class="col-md-12">
-                        <img src="<?php echo $image; ?>" height="80%" width="80%" alt="avatar" class="rounded-circle">
+                        <br>
+                        <img src="<?php echo $image; ?>" height="220px" width="90%" alt="avatar" class="rounded-circle">
+
                     </div>
                 </div>
                 <div class="row mb-10">
                     <div class="col-md-12">
                         <form action="edit-profile.php" method="post" enctype="multipart/form-data">
+                            <br>
                             <input accept="image/*" name="newImageFileUploadControl" type="file" class=" mb-10">
                             <input type="submit" name="uploadImage" class="form-control btn btn-light"
                                    value="Upload Image"/>
@@ -220,19 +266,39 @@ if ($_SESSION['userId']) {
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
+                        <form action="edit-profile.php" method="post" enctype="multipart/form-data">
                         <div class="modal-body">
                             <div class="container">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        pasword
+                                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required placeholder="Password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="password" class="form-control" id="newPassword" name="newPassword" required placeholder="New Password">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="password" class="form-control" id="confirmPassword" name ="confirmPassword" required placeholder="Confirm password">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Become a premium member</button>
+                            <button class="btn btn-primary" name="resetPassword" type="Submit">Reset Password</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
