@@ -236,7 +236,7 @@ $profileList = $stmt->fetchAll();
                              alt="profile image">
                         <div class="card-body">
                             <h5 class="card-title">Name: <?= $profile["firstName"] . ' ' . $profile['lastName'] ?></h5>
-                            <p class="card-text"><?= $profile["bio"] ?></p>
+                            <p class="card-text bio-desc-container"><?= $profile["bio"] ?></p>
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Age: <?php

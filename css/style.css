@@ -219,8 +219,9 @@
     max-height: 100%;
 }
 
-.card-container .card-body {
-    height: 100%;
+.card-container .bio-desc-container {
+    height: 70px;
+    overflow: auto;
 }
 
 /* Edit Profile Page CSS */
