@@ -291,9 +291,10 @@ $profileList = $stmt->fetchAll();
                                 ?>
                                 <div class="row mb-10">
                                     <div class="col-md-12 col-sm-12">
-                                        <button class="btn btn-success w-100">
+                                        <a href="./chat-users.php?id=<?= $profile["id"] ?>"
+                                           class="btn btn-success w-100">
                                             Send Message
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row">
