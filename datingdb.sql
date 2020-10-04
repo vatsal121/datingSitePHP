@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 30, 2020 at 09:46 AM
+-- Generation Time: Oct 04, 2020 at 05:45 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.33
 
@@ -48,6 +48,7 @@ CREATE TABLE `profile` (
   `password` varchar(500) NOT NULL,
   `firstName` varchar(50) NOT NULL,
   `lastName` varchar(50) NOT NULL,
+  `city` varchar(50) NOT NULL,
   `bio` varchar(500) NOT NULL,
   `birthDate` date NOT NULL,
   `gender` varchar(50) NOT NULL,
@@ -56,6 +57,15 @@ CREATE TABLE `profile` (
   `created_date` datetime NOT NULL DEFAULT current_timestamp(),
   `modified_date` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `profile`
+--
+
+INSERT INTO `profile` (`id`, `email`, `password`, `firstName`, `lastName`, `city`, `bio`, `birthDate`, `gender`, `imgUrl`, `user_role`, `created_date`, `modified_date`) VALUES
+(13, 'patel00446@gmail.com', 'test', 'Test', 'User', 'Montreal', '', '1995-12-01', 'male', './images/user_images/patel00446@gmail.com_login-background.jpg', 'regular', '2020-09-30 18:45:17', NULL),
+(14, 'testing@gmail.com', 'test', 'Vatsal 1', 'Chauhan', 'Surat', 'i AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole day', '1995-01-12', 'male', './images/user_images/testing@gmail.com_pngfuel.com.png', 'premium', '2020-10-01 17:16:30', NULL),
+(15, 'abc@gmail.com', 'test', 'Female', 'Girl', 'Quebec', '', '1999-01-22', 'female', './images/user_images/abc@gmail.com_raspberries-1426859_1920.jpg', 'regular', '2020-10-01 17:25:50', NULL);
 
 -- --------------------------------------------------------
 
@@ -111,7 +121,7 @@ ALTER TABLE `messages`
 -- AUTO_INCREMENT for table `profile`
 --
 ALTER TABLE `profile`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `user_favourite_list`

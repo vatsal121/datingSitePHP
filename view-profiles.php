@@ -230,7 +230,7 @@ $profileList = $stmt->fetchAll();
                 }
                 ?>
                 <div class="col-md-3">
-                    <div class="card" style="width: 18rem;">
+                    <div class="card card-container">
                         <img class="card-img-top"
                              src="<?= $profile["imgUrl"] ?>"
                              alt="profile image">
@@ -240,12 +240,15 @@ $profileList = $stmt->fetchAll();
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">Age: <?php
-                                $bday = new DateTime($profile["birthDate"]); // Your date of birth
-                                $today = new Datetime(date('y-d-m'));
-                                $diff = $today->diff($bday);
-                                echo "$diff->y years"
+                                try {
+                                    $birthDay = new DateTime($profile["birthDate"]);
+                                    $today = new Datetime(date('y-d-m'));
+                                    $diff = $today->diff($birthDay);
+                                    echo "$diff->y years";
+                                } catch (Exception $e) {
+                                } // Your date of birth
                                 ?></li>
-                            <li class="list-group-item">Location: Montreal</li>
+                            <li class="list-group-item">Location: <?= $profile["city"] ?></li>
                             <li class="list-group-item">
                                 Gender:
                                 <span style="text-transform: capitalize">
