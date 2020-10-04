@@ -8,6 +8,7 @@ $id = '';
 $firstName = '';
 $lastName = '';
 $email = '';
+$city = '';
 $bio = '';
 $password = '';
 $birthDate = '';
@@ -35,6 +36,7 @@ if ($_SESSION['userId']) {
         $lastName = $row['lastName'];
         $email = $row['email'];
         $bio = $row['bio'];
+        $city = $row['city'];
         $birthDate = $row['birthDate'];
         $gender = $row['gender'];
         $image = $row['imgUrl'];
@@ -97,10 +99,11 @@ if ($_SESSION['userId']) {
         $lastName = $_POST['lastName'];
         $email = $_POST['email'];
         $bio = $_POST['bio'];
+        $city = $_POST['city'];
         $birthDate = $_POST['birthDate'];
         $gender = $_POST['gender'];
 
-        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', birthDate = '$birthDate', gender = '$gender' WHERE id = '$id'";
+        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', city = '$city', birthDate = '$birthDate', gender = '$gender' WHERE id = '$id'";
         $stmt1 = $connection->prepare($query1);
         $stmt1->execute();
         $count1 = $stmt1->rowCount();
@@ -218,6 +221,11 @@ if ($_SESSION['userId']) {
                                         data-target="#changePasswordModal">
                                     Change password
                                 </button>
+                            </div>
+                            <div class="form-label-group">
+                                <input type="type" id="city" name="city" class="form-control"
+                                       value="<?php echo $city; ?>">
+                                <label for="city">City</label>
                             </div>
                             <div class="form-label-group">
                                 <input type="date" id="birthDate" name="birthDate" class="form-control"
