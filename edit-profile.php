@@ -2,7 +2,9 @@
 session_start();
 require_once("./Connector/DbConnectorPDO.php");
 include("./helper/helperFunctions.php");
+$userId = isset($_SESSION["userId"]) && !IsVariableIsSetOrEmpty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
 $connection = getConnection();
+$userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
 $errors = array();
 $id = '';
 $firstName = '';
@@ -15,19 +17,24 @@ $birthDate = '';
 $bio = '';
 $gender = '';
 $image = '';
+$notification = '';
 $birthday = '';
 $image_uploaded = false;
 $imageURL = "./images/user_images/";
-if ($_SESSION['userId']) {
-    $userId = $_SESSION['userId'];
-    $users = $_SESSION['user'];
-
+function getUserFromUserId($userId, $connection)
+{
     $query = "SELECT * from profile WHERE id = '$userId'";
     $stmt = $connection->prepare($query);
     $stmt->execute();
-    $count = $stmt->rowCount();
-    $row = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($count === 0 || $row <= 2) {
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
+if (isset($_SESSION['userId'])) {
+    $userId = $_SESSION['userId'];
+    $users = $_SESSION['user'];
+    $row = getUserFromUserId($userId, $connection);
+
+    if (IsVariableIsSetOrEmpty($row)) {
         array_push($errors, 'Error fetching Data');
     } else {
         $id = $row['id'];
@@ -40,7 +47,7 @@ if ($_SESSION['userId']) {
         $birthDate = $row['birthDate'];
         $gender = $row['gender'];
         $image = $row['imgUrl'];
-
+        $notification = $row['receive_notification'];
         $birthday = new DateTime($row["birthDate"]);
         $today = new Datetime(date('y-d-m'));
         $diff = $today->diff($birthday);
@@ -102,12 +109,23 @@ if ($_SESSION['userId']) {
         $city = $_POST['city'];
         $birthDate = $_POST['birthDate'];
         $gender = $_POST['gender'];
+        if(isset($_POST['notification'])){
+            $notification = 1;
+        }else{
+            $notification = 0;
+        }
 
-        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', city = '$city', birthDate = '$birthDate', gender = '$gender' WHERE id = '$id'";
+
+        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', city = '$city', birthDate = '$birthDate', gender = '$gender', receive_notification = '$notification' , modified_date = 'NOW()'  WHERE id = '$id'";
         $stmt1 = $connection->prepare($query1);
         $stmt1->execute();
-        $count1 = $stmt1->rowCount();
-        header("Location: ./edit-profile.php");
+
+        $rowGetNewUserData = getUserFromUserId($userId, $connection);
+        if (!IsVariableIsSetOrEmpty($rowGetNewUserData)) {
+            $_SESSION["user"] = $rowGetNewUserData;
+        }
+
+        // header("Location: ./edit-profile.php");
     }
 }
 ?>
@@ -249,7 +267,12 @@ if ($_SESSION['userId']) {
                                     <label class="form-check-label" for="female">Female</label>
                                 </div>
                             </div>
-
+                            <div class="form-label-group">
+                                <input type="checkbox" id="notification" name="notification" value="notification" <?php if ($notification === "1") {
+                                    echo "checked";
+                                }?> >
+                                <label for="notification">Recieve Notification or Not</label>
+                            </div>
                             <hr class="colorgraph">
                             <div class="row">
                                 <div class="col-xs-12 col-md-6"></div>
