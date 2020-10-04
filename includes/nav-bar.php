@@ -40,7 +40,7 @@ if (isset($_SESSION["userId"])) {
                 if ($userId !== 0) {
                     ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="./edit-profile.php">Edit-Profile</a>
+                        <a class="nav-link" href="./edit-profile.php">Edit Profile</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="./logout.php">Logout</a>
