@@ -149,7 +149,7 @@ if (isset($_POST['Submit'])) {
                             <div class="form-label-group">
                                 <input type="text" name="city" id="inputCity" class="form-control"
                                        placeholder="City" required>
-                                <label for="city">City</label>
+                                <label for="inputCity">City</label>
                             </div>
                             <div class="form-label-group">
                                 <input type="date" id="birthDate" name="birthDate" class="form-control" required>
