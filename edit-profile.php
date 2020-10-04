@@ -94,18 +94,17 @@ if ($_SESSION['userId']) {
 
     if (isset($_POST['Submit'])) {
         $firstName = $_POST['firstName'];
-        $password = $_POST['password'];
         $lastName = $_POST['lastName'];
         $email = $_POST['email'];
         $bio = $_POST['bio'];
         $birthDate = $_POST['birthDate'];
         $gender = $_POST['gender'];
 
-        $query1 = "UPDATE profile SET email = '$email',password = '$password', firstName = '$firstName', lastName = '$lastName', bio = '$bio', birthDate = '$birthDate', gender = '$gender' WHERE id = '$id'";
+        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', birthDate = '$birthDate', gender = '$gender' WHERE id = '$id'";
         $stmt1 = $connection->prepare($query1);
         $stmt1->execute();
         $count1 = $stmt1->rowCount();
-
+        header("Location: ./edit-profile.php");
     }
 }
 ?>
@@ -167,7 +166,7 @@ if ($_SESSION['userId']) {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><?php echo $firstName ?><?php echo $lastName ?> </h2>
+                        <h2><?php echo $firstName ?> <?php echo $lastName ?> </h2>
                     </div>
                 </div>
                 <div class="row">
@@ -177,8 +176,9 @@ if ($_SESSION['userId']) {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                  disabled><?php echo $bio; ?></textarea>
+                        <blockquote>
+                        <p><?php echo $bio; ?></p>
+                        </blockquote>
                     </div>
                 </div>
             </div>

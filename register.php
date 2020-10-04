@@ -17,41 +17,47 @@ if (isset($_POST['Submit'])) {
     $firstName = $_POST["firstName"];
     $lastName = $_POST["lastName"];
     $password = $_POST["password"];
+    $confirmpassword = $_POST['confirmpassword'];
+    $city = $_POST['city'];
     $dateOfBirth = $_POST["birthDate"];
     $gender = $_POST["gender"];
 
+    if($password === $confirmpassword) {
 
-    if (!IsVariableIsSetOrEmpty($email) && !IsVariableIsSetOrEmpty($firstName) && !IsVariableIsSetOrEmpty($lastName) && !IsVariableIsSetOrEmpty($password) && !IsVariableIsSetOrEmpty($dateOfBirth) && !IsVariableIsSetOrEmpty($gender)) {
-        if (!IsVariableIsSetOrEmpty($_FILES['fileUpload'])) {
-            $file_name = $email . "_" . $_FILES['fileUpload']['name'];
-            $file_size = $_FILES['fileUpload']['size'];
-            $file_tmp = $_FILES['fileUpload']['tmp_name'];
-            $file_type = $_FILES['fileUpload']['type'];
-            $array = explode('.', $_FILES['fileUpload']['name']);
-            $file_ext = strtolower(end($array));
+        if (!IsVariableIsSetOrEmpty($email) && !IsVariableIsSetOrEmpty($firstName) && !IsVariableIsSetOrEmpty($lastName) && !IsVariableIsSetOrEmpty($password) && !IsVariableIsSetOrEmpty($dateOfBirth) && !IsVariableIsSetOrEmpty($gender)) {
+            if (!IsVariableIsSetOrEmpty($_FILES['fileUpload'])) {
+                $file_name = $email . "_" . $_FILES['fileUpload']['name'];
+                $file_size = $_FILES['fileUpload']['size'];
+                $file_tmp = $_FILES['fileUpload']['tmp_name'];
+                $file_type = $_FILES['fileUpload']['type'];
+                $array = explode('.', $_FILES['fileUpload']['name']);
+                $file_ext = strtolower(end($array));
 
-            $extensions = array("jpeg", "jpg", "png", "gif");
+                $extensions = array("jpeg", "jpg", "png", "gif");
 
-            if ($file_size > 5120000) {
-                array_push($errors, 'File size must be less than 5 MB');
-            }
-
-            if (empty($errors) == true) {
-
-                $imageURL = $imageURL . $file_name;
-                move_uploaded_file($file_tmp, $imageURL);
-                $image_uploaded = true;
-                try {
-                    $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$dateOfBirth','$gender','$imageURL','regular')";
-                    $stmt = $connection->prepare($query);
-                    $stmt->execute();
-                    $registerSuccessfully = true;
-                } catch (PDOException $exception) {
-                    throw $exception;
+                if ($file_size > 5120000) {
+                    array_push($errors, 'File size must be less than 5 MB');
                 }
 
+                if (empty($errors) == true) {
+
+                    $imageURL = $imageURL . $file_name;
+                    move_uploaded_file($file_tmp, $imageURL);
+                    $image_uploaded = true;
+                    try {
+                        $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,city,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$city','$dateOfBirth','$gender','$imageURL','regular')";
+                        $stmt = $connection->prepare($query);
+                        $stmt->execute();
+                        $registerSuccessfully = true;
+                    } catch (PDOException $exception) {
+                        throw $exception;
+                    }
+
+                }
             }
         }
+    }else{
+        array_push($errors, 'Fail to match Password');
     }
 }
 ?>
@@ -135,11 +141,16 @@ if (isset($_POST['Submit'])) {
                             </div>
 
                             <div class="form-label-group">
-                                <input type="password" id="inputConfirmPassword" class="form-control"
+                                <input type="password" name="confirmpassword" id="inputConfirmPassword" class="form-control"
                                        placeholder="Password" required>
                                 <label for="inputConfirmPassword">Confirm password</label>
                             </div>
                             <hr>
+                            <div class="form-label-group">
+                                <input type="type" name="city" id="inputCity" class="form-control"
+                                       placeholder="City" required>
+                                <label for="city">City</label>
+                            </div>
                             <div class="form-label-group">
                                 <input type="date" id="birthDate" name="birthDate" class="form-control" required>
                                 <label for="birthDate">Birth Date</label>
