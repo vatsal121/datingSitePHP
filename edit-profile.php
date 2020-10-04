@@ -47,20 +47,20 @@ if ($_SESSION['userId']) {
 
     }
 
-    if(isset($_POST["resetPassword"])){
+    if (isset($_POST["resetPassword"])) {
         $oldpassword = $_POST['oldPassword'];
         $NewPassword = $_POST['newPassword'];
         $ConfirmPassword = $_POST['confirmPassword'];
-        if($password === $oldpassword){
-            if($NewPassword === $ConfirmPassword){
+        if ($password === $oldpassword) {
+            if ($NewPassword === $ConfirmPassword) {
                 $query3 = "UPDATE profile SET password = '$NewPassword' WHERE id = '$id'";
                 $stmt3 = $connection->prepare($query3);
                 $stmt3->execute();
                 $count3 = $stmt3->rowCount();
-            }else{
+            } else {
                 array_push($errors, 'Couldnt match the New Password and Confirm Password');
             }
-        }else{
+        } else {
             array_push($errors, 'Old Password is incorrect');
         }
     }
@@ -87,7 +87,7 @@ if ($_SESSION['userId']) {
             $stmt2 = $connection->prepare($query2);
             $stmt2->execute();
             $count2 = $stmt2->rowCount();
-        }catch (PDOException $exception) {
+        } catch (PDOException $exception) {
             throw $exception;
         }
         header("Location: ./edit-profile.php");
@@ -169,7 +169,7 @@ if ($_SESSION['userId']) {
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h2><?php echo $firstName ?> <?php echo $lastName ?> </h2>
+                        <h2><?php echo $firstName ?><?php echo $lastName ?> </h2>
                     </div>
                 </div>
                 <div class="row">
@@ -180,7 +180,7 @@ if ($_SESSION['userId']) {
                 <div class="row">
                     <div class="col-md-12">
                         <blockquote>
-                        <p><?php echo $bio; ?></p>
+                            <p><?php echo $bio; ?></p>
                         </blockquote>
                     </div>
                 </div>
@@ -264,7 +264,8 @@ if ($_SESSION['userId']) {
                 </div>
             </div>
             <!-- Modal -->
-            <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModal"
+            <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog"
+                 aria-labelledby="changePasswordModal"
                  aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -275,46 +276,51 @@ if ($_SESSION['userId']) {
                             </button>
                         </div>
                         <form action="edit-profile.php" method="post" enctype="multipart/form-data">
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <input type="password" class="form-control" id="oldPassword" name="oldPassword" required placeholder="Password">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="password" class="form-control" id="oldPassword"
+                                                   name="oldPassword" required placeholder="Password">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <input type="password" class="form-control" id="newPassword" name="newPassword" required placeholder="New Password">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="password" class="form-control" id="newPassword"
+                                                   name="newPassword" required placeholder="New Password">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-body">
-                            <div class="container">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <input type="password" class="form-control" id="confirmPassword" name ="confirmPassword" required placeholder="Confirm password">
+                            <div class="modal-body">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="password" class="form-control" id="confirmPassword"
+                                                   name="confirmPassword" required placeholder="Confirm password">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button class="btn btn-primary" name="resetPassword" type="Submit">Reset Password</button>
-                        </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button class="btn btn-primary" name="resetPassword" type="Submit">Reset Password
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-
-            <!-- footer -->
-            <?php include("./includes/footer.php") ?>
-            <!-- end of footer -->
         </div>
+    </div>
+    <!-- footer -->
+    <?php include("./includes/footer.php") ?>
+    <!-- end of footer -->
+</div>
 
 </body>
 </html>
