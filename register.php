@@ -57,7 +57,7 @@ if (isset($_POST['Submit'])) {
             }
         }
     }else{
-        array_push($errors, 'Fail to match Password');
+        array_push($errors, 'Password and Confirm Password doesnt match');
     }
 }
 ?>
