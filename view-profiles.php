@@ -21,6 +21,7 @@ $firstName = "";
 $lastName = "";
 $gender = "";
 $ageToSearch = "18";
+$isWinkSent = false;
 $query = "select * from profile ";
 if ($userId !== 0) {
     $query .= "where id <> :userId";
@@ -103,6 +104,19 @@ $stmt->execute();
 //$profileList = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $profileList = $stmt->fetchAll();
 
+
+if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
+    $sendWinkToId = isset($_GET["sendWinkTo"]) && !IsVariableIsSetOrEmpty($_GET["sendWinkTo"]) ? intval($_GET["sendWinkTo"]) : 0;
+    if ($sendWinkToId !== 0) {
+        $insertMessageQuery = "INSERT INTO messages(msg_from_user_id,msg,msg_to_user_id,msg_date,is_msg_read) 
+                               values(:userId,'😉',:sendWinkToId,NOW(),0)";
+        $insertStmt = $connection->prepare($insertMessageQuery);
+        $insertStmt->bindParam(':userId', $userId);
+        $insertStmt->bindParam(':sendWinkToId', $sendWinkToId);
+        $insertStmt->execute();
+        $isWinkSent = true;
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -121,6 +135,24 @@ $profileList = $stmt->fetchAll();
     include("./includes/nav-bar.php")
     ?>
 
+    <?php
+    if ($isWinkSent && isset($_GET["sendWinkTo"])) {
+        ?>
+        <div class="row mt-10 mb-10">
+            <div class="col-md-12">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    Wink (😉) sent to user successfully! Click <strong><a
+                                href="./chat-users.php?id=<?= $_GET["sendWinkTo"] ?>">here</a></strong> to start
+                    chatting.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
 
     <div class="mb15">
         <div class="row mt-10 mb-10">
@@ -299,9 +331,10 @@ $profileList = $stmt->fetchAll();
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 col-sm-12">
-                                        <button class="btn btn-info w-100">
-                                            Send wink
-                                        </button>
+                                        <form action="view-profiles.php?sendWinkTo=<?= $profile["id"] ?>" method="post">
+                                            <input type="submit" name="SendWink" value="Send wink"
+                                                   class="btn btn-info w-100"/>
+                                        </form>
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <?php
@@ -399,8 +432,18 @@ $profileList = $stmt->fetchAll();
             </div>
         </div>
     </div>
+
     <script>
         $(document).ready(function () {
+            <?php
+                if ($isWinkSent && isset($_GET["sendWinkTo"])) {
+            ?>
+                setTimeout(function () {
+                    $(".alert").alert('close');
+                }, 5000);
+            <?php
+                }
+            ?>
             $("#ageInputId").on('input', function () {
                 if (parseInt($("#ageInputId").val()) < 18) {
                     $("#ageInputId").val("18");
