@@ -147,7 +147,7 @@ if (isset($_POST['Submit'])) {
                             </div>
                             <hr>
                             <div class="form-label-group">
-                                <input type="type" name="city" id="inputCity" class="form-control"
+                                <input type="text" name="city" id="inputCity" class="form-control"
                                        placeholder="City" required>
                                 <label for="city">City</label>
                             </div>
