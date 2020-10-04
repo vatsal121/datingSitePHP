@@ -19,7 +19,6 @@ if (isset($_POST["SendMessage"]) && !IsVariableIsSetOrEmpty($_POST["SendMessage"
         $insertStmt->bindParam(':msg', $msg);
         $insertStmt->bindParam(':msgToUserId', $msgToUserId);
         $insertStmt->execute();
-        $cnt = $insertStmt->rowCount();
     }
 
 }
@@ -76,6 +75,7 @@ WHERE lastMessage is not null";
       ,msg
       ,msg_date
       ,is_msg_read
+      ,msg_read_date
       ,fromUser.id as fromUserId
       ,fromUser.firstName as fromFirstName
       ,fromUser.lastName as fromLastName
@@ -95,13 +95,18 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
     $stmt->bindParam(':sentToUserID', $_GET["id"]);
     $stmt->execute();
     $msgList = $stmt->fetchAll();
-//
-//
-//    print_r($msgList);
-//    die();
+
+    if (count($msgList) > 0) {
+        $lastMsgRow = end($msgList);
+        if ($lastMsgRow["msg_from_user_id"] === $msgToUserId && $lastMsgRow["msg_to_user_id"] === $userId && intval($lastMsgRow["is_msg_read"]) === 0) {
+            $updateAllMsgReadQuery = "UPDATE messages set is_msg_read=1,msg_read_date=NOW() where msg_from_user_id=:sentToUserID and msg_to_user_id=:userId and is_msg_read=0";
+            $stmt = $connection->prepare($updateAllMsgReadQuery);
+            $stmt->bindParam(':sentToUserID', $msgToUserId);
+            $stmt->bindParam(':userId', $userId);
+            $stmt->execute();
+        }
+    }
 }
-
-
 ?>
 
 <!doctype html>
@@ -392,8 +397,10 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                                         <div class="chat_ib">
                                             <h5>
                                                 <a href="./chat-users.php?id=<?= $recentMsgItem["id"] ?>"><?= $recentMsgItem["firstName"] . ' ' . $recentMsgItem["lastName"] ?></a>
-                                                <span
-                                                        class="chat_date"><?= $recentMsgItem["msgDate"] ?></span></h5>
+                                                <span class="chat_date">
+                                                    <?= $recentMsgItem["msgDate"] ?>
+                                                </span>
+                                            </h5>
                                             <p><?= $recentMsgItem["lastMessage"] ?></p>
                                         </div>
                                     </div>
@@ -417,7 +424,21 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                                         </div>
                                         <div class="sent_msg">
                                             <p><?= $item["msg"] ?></p>
-                                            <span class="time_date"><?= $item["msg_date"] ?></span>
+                                            <span class="time_date">
+                                                <?= $item["msg_date"] ?>
+                                            </span>
+                                            <span class="time_date">
+                                                 <?php
+                                                 if ($userObj["user_role"] === "premium") {
+                                                     if (intval($item["is_msg_read"]) === 0) {
+                                                         ?>
+                                                         Delivered and Not read
+                                                     <?php } else {
+                                                         ?>Read by <?= $item["toUserFirstName"] . '' . $item["toUserLastName"] ?> at <?= $item["msg_read_date"] ?>
+                                                     <?php }
+                                                 }
+                                                 ?>
+                                            </span>
                                         </div>
                                     </div>
                                     <?php
