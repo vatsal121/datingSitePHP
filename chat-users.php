@@ -1,5 +1,106 @@
 <?php
 session_start();
+require_once("./Connector/DbConnectorPDO.php");
+require("./helper/helperFunctions.php");
+$userId = isset($_SESSION["userId"]) && !IsVariableIsSetOrEmpty($_SESSION["userId"]) ? $_SESSION["userId"] : 0;
+$connection = getConnection();
+$userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSION["user"] : "";
+$msgList = [];
+$recentMsgList = [];
+$msgToUserId = isset($_GET["id"]) && !IsVariableIsSetOrEmpty($_GET["id"]) ? $_GET["id"] : 0;
+
+if (isset($_POST["SendMessage"]) && !IsVariableIsSetOrEmpty($_POST["SendMessage"])) {
+    $msg = $_POST["msg"];
+    if (isset($msg) && !IsVariableIsSetOrEmpty($msg)) {
+        $insertMessageQuery = "INSERT INTO messages(msg_from_user_id,msg,msg_to_user_id,msg_date,is_msg_read) 
+                               values(:userId,:msg,:msgToUserId,NOW(),0)";
+        $insertStmt = $connection->prepare($insertMessageQuery);
+        $insertStmt->bindParam(':userId', $userId);
+        $insertStmt->bindParam(':msg', $msg);
+        $insertStmt->bindParam(':msgToUserId', $msgToUserId);
+        $insertStmt->execute();
+        $cnt = $insertStmt->rowCount();
+    }
+
+}
+
+if ($userId === 0 || (!isset($_GET["id"]) && !isset($msgToUserId))) {
+    header("location:./view-profiles.php");
+}
+
+if ($msgToUserId !== 0) {
+
+    $recentMsgQuery = "select *
+from (
+SELECT PROFILE
+    .id,
+    PROFILE.firstName,
+    PROFILE.lastName,
+    PROFILE.imgUrl,
+    (
+    SELECT
+        msg
+    FROM
+        messages
+    WHERE
+        messages.msg_from_user_id = PROFILE.id OR messages.msg_to_user_id = PROFILE.id
+    ORDER BY
+        id
+    DESC
+LIMIT 1
+) AS lastMessage,(
+    SELECT
+        msg_date
+    FROM
+        messages
+    WHERE
+        messages.msg_from_user_id = PROFILE.id OR messages.msg_to_user_id = PROFILE.id
+    ORDER BY
+        id
+    DESC
+LIMIT 1
+) AS msgDate
+FROM PROFILE
+where id <> :userId 
+) X
+WHERE lastMessage is not null";
+    $recentQueryStmt = $connection->prepare($recentMsgQuery);
+    $recentQueryStmt->bindParam(':userId', $userId);
+    $recentQueryStmt->execute();
+    $recentMsgList = $recentQueryStmt->fetchAll();
+
+
+    $query = "SELECT m.id as msg_id
+	  ,msg_from_user_id
+      ,msg_to_user_id
+      ,msg
+      ,msg_date
+      ,is_msg_read
+      ,fromUser.id as fromUserId
+      ,fromUser.firstName as fromFirstName
+      ,fromUser.lastName as fromLastName
+      ,fromUser.imgUrl as fromUserImgUrl
+      ,toUser.id as toUserId
+      ,toUser.firstName as toUserFirstName
+      ,toUser.lastName as toUserLastName
+      ,toUser.imgUrl as toUserImgUrl
+FROM messages m
+left join profile as fromUser on m.msg_from_user_id=fromUser.id
+left JOIN profile as toUser on m.msg_to_user_id=toUser.id
+WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_user_id=:sentToUserID and msg_to_user_id=:userId)";
+//ORDER BY msg_date DESC";
+
+    $stmt = $connection->prepare($query);
+    $stmt->bindParam(':userId', $userId);
+    $stmt->bindParam(':sentToUserID', $_GET["id"]);
+    $stmt->execute();
+    $msgList = $stmt->fetchAll();
+//
+//
+//    print_r($msgList);
+//    die();
+}
+
 
 ?>
 
@@ -112,6 +213,10 @@ session_start();
             width: 11%;
         }
 
+        .chat_img img {
+            height: 45px;
+        }
+
         .chat_ib {
             float: left;
             padding: 0 0 0 15px;
@@ -187,14 +292,25 @@ session_start();
             width: 100%;
         }
 
-        .outgoing_msg {
+        .outgoing_msg, .incoming_msg {
             overflow: hidden;
             margin: 26px 0 26px;
+        }
+
+        .outgoing_msg_img {
+            display: inline-block;
+            width: 6%;
+            float: right;
+        }
+
+        .outgoing_msg_img img, .incoming_msg_img img {
+            height: 35px;
         }
 
         .sent_msg {
             float: right;
             width: 46%;
+            padding: 0 10px 0 0px;
         }
 
         .input_msg_write input {
@@ -252,151 +368,93 @@ session_start();
                             <div class="recent_heading">
                                 <h4>Recent</h4>
                             </div>
-                            <div class="srch_bar">
-                                <div class="stylish-input-group">
-                                    <input type="text" class="search-bar" placeholder="Search">
-                                    <span class="input-group-addon">
-                <button type="button"> <i class="fa fa-search" aria-hidden="true"></i> </button>
-                </span></div>
-                            </div>
+                            <!--                            <div class="srch_bar">-->
+                            <!--                                <div class="stylish-input-group">-->
+                            <!--                                    <input type="text" class="search-bar" placeholder="Search">-->
+                            <!--                                    <span class="input-group-addon">-->
+                            <!--                                            <button type="button">-->
+                            <!--                                                <i class="fa fa-search" aria-hidden="true"></i>-->
+                            <!--                                            </button>-->
+                            <!--                                     </span>-->
+                            <!--                                </div>-->
+                            <!--                            </div>-->
                         </div>
                         <div class="inbox_chat">
-                            <div class="chat_list active_chat">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
+                            <?php
+                            foreach ($recentMsgList as $recentMsgItem) {
+                                ?>
+                                <div class="chat_list <?= $recentMsgItem["id"] === $msgToUserId ? "active_chat" : "" ?>">
+                                    <div class="chat_people">
+                                        <div class="chat_img">
+                                            <img class="rounded-circle" src="<?= $recentMsgItem["imgUrl"] ?>"
+                                                 alt="to-user-img">
+                                        </div>
+                                        <div class="chat_ib">
+                                            <h5>
+                                                <a href="./chat-users.php?id=<?= $recentMsgItem["id"] ?>"><?= $recentMsgItem["firstName"] . ' ' . $recentMsgItem["lastName"] ?></a>
+                                                <span
+                                                        class="chat_date"><?= $recentMsgItem["msgDate"] ?></span></h5>
+                                            <p><?= $recentMsgItem["lastMessage"] ?></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="chat_list">
-                                <div class="chat_people">
-                                    <div class="chat_img"><img src="https://ptetutorials.com/images/user-profile.png"
-                                                               alt="sunil"></div>
-                                    <div class="chat_ib">
-                                        <h5>Sunil Rajput <span class="chat_date">Dec 25</span></h5>
-                                        <p>Test, which is a new approach to have all solutions
-                                            astrology under one roof.</p>
-                                    </div>
-                                </div>
-                            </div>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="mesgs">
                         <div class="msg_history">
-                            <div class="incoming_msg">
-                                <div class="incoming_msg_img"><img
-                                            src="https://ptetutorials.com/images/user-profile.png" alt="sunil"></div>
-                                <div class="received_msg">
-                                    <div class="received_withd_msg">
-                                        <p>Test which is a new approach to have all
-                                            solutions</p>
-                                        <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                                </div>
-                            </div>
-                            <div class="outgoing_msg">
-                                <div class="sent_msg">
-                                    <p>Test which is a new approach to have all
-                                        solutions</p>
-                                    <span class="time_date"> 11:01 AM    |    June 9</span></div>
-                            </div>
-                            <div class="incoming_msg">
-                                <div class="incoming_msg_img"><img
-                                            src="https://ptetutorials.com/images/user-profile.png" alt="sunil"></div>
-                                <div class="received_msg">
-                                    <div class="received_withd_msg">
-                                        <p>Test, which is a new approach to have</p>
-                                        <span class="time_date"> 11:01 AM    |    Yesterday</span></div>
-                                </div>
-                            </div>
-                            <div class="outgoing_msg">
-                                <div class="sent_msg">
-                                    <p>Apollo University, Delhi, India Test</p>
-                                    <span class="time_date"> 11:01 AM    |    Today</span></div>
-                            </div>
-                            <div class="incoming_msg">
-                                <div class="incoming_msg_img"><img
-                                            src="https://ptetutorials.com/images/user-profile.png" alt="sunil"></div>
-                                <div class="received_msg">
-                                    <div class="received_withd_msg">
-                                        <p>We work directly with our designers and suppliers,
-                                            and sell direct to you, which means quality, exclusive
-                                            products, at a price anyone can afford.</p>
-                                        <span class="time_date"> 11:01 AM    |    Today</span></div>
-                                </div>
-                            </div>
+                            <?php
+                            foreach ($msgList
+
+                                     as $item) {
+                                if ($item["fromUserId"] === $userId) {
+                                    ?>
+                                    <div class="outgoing_msg">
+                                        <div class="outgoing_msg_img">
+                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>" alt="img">
+                                        </div>
+                                        <div class="sent_msg">
+                                            <p><?= $item["msg"] ?></p>
+                                            <span class="time_date"><?= $item["msg_date"] ?></span>
+                                        </div>
+                                    </div>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <div class="incoming_msg">
+                                        <div class="incoming_msg_img">
+                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>" alt="img">
+                                        </div>
+                                        <div class="received_msg">
+                                            <div class="received_withd_msg">
+                                                <p><?= $item["msg"] ?></p>
+                                                <span class="time_date"><?= $item["msg_date"] ?></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <?php
+                                }
+                            }
+                            ?>
                         </div>
                         <div class="type_msg">
                             <div class="input_msg_write">
-                                <input type="text" class="write_msg" placeholder="Type a message"/>
-                                <button class="msg_send_btn" type="button"><i class="fa fa-paper-plane-o"
-                                                                              aria-hidden="true"></i></button>
+                                <form action="chat-users.php?id=<?= $msgToUserId ?>" method="post">
+                                    <input type="text" name="msg" class="write_msg" placeholder="Type a message"
+                                           required/>
+                                    <button id="sendBtn" class="msg_send_btn" type="button">
+                                        <i class="fa fa-paper-plane-o" aria-hidden="true"></i>
+                                    </button>
+                                    <input type="submit" id="sendMessage" style="display: none;" value="Send"
+                                           name="SendMessage"/>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
-                <p class="text-center top_spac"> Design by <a target="_blank" href="#">Sunil Rajput</a></p>
-
             </div>
         </div>
 
@@ -406,6 +464,12 @@ session_start();
     <?php include("./includes/footer.php") ?>
     <!-- end of footer -->
 </div>
-
+<script>
+    $(document).ready(function () {
+        $("#sendBtn").on('click', function () {
+            $("#sendMessage").click();
+        });
+    });
+</script>
 </body>
 </html>
