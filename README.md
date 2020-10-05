@@ -110,6 +110,7 @@ testing@gmail.com | test | premium user
 	- 5) User has a premium account then user can see whether the other user has read the message or not. 
 	- 6) While having a premium account they can also add other users to their own favourite list and can also see who added them.
 	- 7) User can send wink to other users directly.
+	- 8) "Send wink" button will send the wink to the chat directly.
 
 - Edit-Profile : 
 	- 1) In this page, user can see and update their details.
