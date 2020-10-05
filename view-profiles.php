@@ -105,7 +105,7 @@ $stmt->execute();
 $profileList = $stmt->fetchAll();
 
 
-if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
+if (isset($_GET["sendWinkTo"])) {
     $sendWinkToId = isset($_GET["sendWinkTo"]) && !IsVariableIsSetOrEmpty($_GET["sendWinkTo"]) ? intval($_GET["sendWinkTo"]) : 0;
     if ($sendWinkToId !== 0) {
         $queryGetLastMessage = "SELECT * 
@@ -118,8 +118,8 @@ if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
         $getLastMessageStmt->execute();
         $getLastMessageList = $getLastMessageStmt->fetchAll();
         if (isset($getLastMessageList) && !IsVariableIsSetOrEmpty($getLastMessageList) && count($getLastMessageList) > 0) {
-            $getFirstRow=$getLastMessageList[0];
-            if(!IsVariableIsSetOrEmpty($getFirstRow)){
+            $getFirstRow = $getLastMessageList[0];
+            if (!IsVariableIsSetOrEmpty($getFirstRow)) {
                 $updateAllMsgReadQuery = "UPDATE messages set is_msg_read=1,msg_read_date=NOW() where msg_from_user_id=:sentToUserID and msg_to_user_id=:userId and is_msg_read=0";
                 $updateAllMsgRead = $connection->prepare($updateAllMsgReadQuery);
                 $updateAllMsgRead->bindParam(':sentToUserID', $sendWinkToId);
@@ -351,10 +351,10 @@ if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 col-sm-12">
-                                        <form action="view-profiles.php?sendWinkTo=<?= $profile["id"] ?>" method="post">
-                                            <input type="submit" name="SendWink" value="Send wink"
-                                                   class="btn btn-info w-100"/>
-                                        </form>
+
+                                        <a href="./view-profiles.php?sendWinkTo=<?= $profile["id"] ?>"
+                                           name="SendWink" class="btn btn-info w-100">Send wink</a>
+
                                     </div>
                                     <div class="col-md-6 col-sm-12">
                                         <?php
@@ -368,9 +368,10 @@ if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
                                             <?php
                                         } else {
                                             ?>
-                                            <button class="btn btn-danger w-100">
+                                            <a class="btn btn-danger"
+                                               href="./view-profiles.php?addToFavouriteId=<?= $profile["id"] ?>">
                                                 Favourite
-                                            </button>
+                                            </a>
                                             <?php
                                         } ?>
                                     </div>
@@ -447,7 +448,8 @@ if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Become a premium member</button>
+                    <a href="./become-premium-member.php" class="btn btn-primary"
+                       name="BecomePremium">Become a premium member</a>
                 </div>
             </div>
         </div>
