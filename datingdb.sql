@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2020 at 09:04 AM
+-- Generation Time: Oct 05, 2020 at 07:24 PM
 -- Server version: 10.4.14-MariaDB
--- PHP Version: 7.2.33
+-- PHP Version: 7.4.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Database: `datingdb`
 --
+CREATE DATABASE IF NOT EXISTS `datingdb` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `datingdb`;
 
 -- --------------------------------------------------------
 
@@ -27,15 +29,19 @@ SET time_zone = "+00:00";
 -- Table structure for table `messages`
 --
 
-CREATE TABLE `messages` (
-  `id` int(50) NOT NULL,
+DROP TABLE IF EXISTS `messages`;
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int(50) NOT NULL AUTO_INCREMENT,
   `msg_from_user_id` int(50) NOT NULL,
   `msg` varchar(500) COLLATE utf8mb4_bin NOT NULL,
   `msg_to_user_id` int(50) NOT NULL,
   `msg_date` datetime NOT NULL,
   `is_msg_read` tinyint(1) NOT NULL DEFAULT 0,
-  `msg_read_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+  `msg_read_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `MSG_FROM_USER` (`msg_from_user_id`),
+  KEY `MSG_TO_USER` (`msg_to_user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 --
 -- Dumping data for table `messages`
@@ -65,8 +71,9 @@ INSERT INTO `messages` (`id`, `msg_from_user_id`, `msg`, `msg_to_user_id`, `msg_
 -- Table structure for table `profile`
 --
 
-CREATE TABLE `profile` (
-  `id` int(50) NOT NULL,
+DROP TABLE IF EXISTS `profile`;
+CREATE TABLE IF NOT EXISTS `profile` (
+  `id` int(50) NOT NULL AUTO_INCREMENT,
   `email` varchar(500) NOT NULL,
   `password` varchar(500) NOT NULL,
   `firstName` varchar(50) NOT NULL,
@@ -79,8 +86,10 @@ CREATE TABLE `profile` (
   `receive_notification` tinyint(1) NOT NULL DEFAULT 0,
   `user_role` text NOT NULL,
   `created_date` datetime NOT NULL DEFAULT current_timestamp(),
-  `modified_date` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `modified_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `profile`
@@ -101,12 +110,16 @@ INSERT INTO `profile` (`id`, `email`, `password`, `firstName`, `lastName`, `city
 -- Table structure for table `user_favourite_list`
 --
 
-CREATE TABLE `user_favourite_list` (
-  `id` int(50) NOT NULL,
+DROP TABLE IF EXISTS `user_favourite_list`;
+CREATE TABLE IF NOT EXISTS `user_favourite_list` (
+  `id` int(50) NOT NULL AUTO_INCREMENT,
   `user_id` int(50) NOT NULL,
   `user_id_favourited` int(50) NOT NULL,
-  `dateCreated` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `dateCreated` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id_favourite` (`user_id`),
+  KEY `user_id_to_favourite` (`user_id_favourited`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user_favourite_list`
@@ -118,55 +131,6 @@ INSERT INTO `user_favourite_list` (`id`, `user_id`, `user_id_favourited`, `dateC
 (11, 1, 6, '2020-10-05 00:44:01'),
 (12, 2, 4, '2020-10-05 00:54:09'),
 (20, 9, 2, '2020-10-05 01:48:37');
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `messages`
---
-ALTER TABLE `messages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `MSG_FROM_USER` (`msg_from_user_id`),
-  ADD KEY `MSG_TO_USER` (`msg_to_user_id`);
-
---
--- Indexes for table `profile`
---
-ALTER TABLE `profile`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `user_favourite_list`
---
-ALTER TABLE `user_favourite_list`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id_favourite` (`user_id`),
-  ADD KEY `user_id_to_favourite` (`user_id_favourited`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `messages`
---
-ALTER TABLE `messages`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
-
---
--- AUTO_INCREMENT for table `profile`
---
-ALTER TABLE `profile`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
-
---
--- AUTO_INCREMENT for table `user_favourite_list`
---
-ALTER TABLE `user_favourite_list`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
