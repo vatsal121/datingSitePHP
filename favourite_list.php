@@ -122,7 +122,7 @@ if (isset($_SESSION['userId'])) {
                 <td><?php echo $item1['firstName']; ?></td>
                 <td><?php echo $item1['lastName']; ?></td>
                 <td><?php echo $item1['dateCreated']; ?></td>
-                <td></td>
+                <td>You were added by <?php echo $item1['firstName'] . " " .$item1['lastName']; ?> to their favourite list</td>
             </tr>
         <?php }
         if (count($userThatFavouritedMe) <= 0 && count($userIFavourited) <= 0) {
