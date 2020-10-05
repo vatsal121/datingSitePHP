@@ -237,6 +237,7 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
             border-bottom: 1px solid #c4c4c4;
             margin: 0;
             padding: 18px 16px 10px;
+            cursor: pointer;
         }
 
         .inbox_chat {
@@ -371,7 +372,7 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                     <div class="inbox_people">
                         <div class="headind_srch">
                             <div class="recent_heading">
-                                <h4>Recent</h4>
+                                <h4>Recent Chats</h4>
                             </div>
                             <!--                            <div class="srch_bar">-->
                             <!--                                <div class="stylish-input-group">-->
@@ -386,28 +387,44 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                         </div>
                         <div class="inbox_chat">
                             <?php
-                            foreach ($recentMsgList as $recentMsgItem) {
-                                ?>
-                                <div class="chat_list <?= $recentMsgItem["id"] === $msgToUserId ? "active_chat" : "" ?>">
-                                    <div class="chat_people">
-                                        <div class="chat_img">
-                                            <img class="rounded-circle" src="<?= $recentMsgItem["imgUrl"] ?>"
-                                                 alt="to-user-img">
-                                        </div>
-                                        <div class="chat_ib">
-                                            <h5>
-                                                <a href="./chat-users.php?id=<?= $recentMsgItem["id"] ?>"><?= $recentMsgItem["firstName"] . ' ' . $recentMsgItem["lastName"] ?></a>
-                                                <span class="chat_date">
+                            if (count($recentMsgList) > 0) {
+                                foreach ($recentMsgList as $recentMsgItem) {
+                                    ?>
+                                    <div class="chat_list <?= $recentMsgItem["id"] === $msgToUserId ? "active_chat" : "" ?>"
+                                         data-id="<?= $recentMsgItem["id"] ?>">
+                                        <div class="chat_people">
+                                            <div class="chat_img">
+                                                <img class="rounded-circle" src="<?= $recentMsgItem["imgUrl"] ?>"
+                                                     alt="to-user-img">
+                                            </div>
+                                            <div class="chat_ib">
+                                                <h5>
+                                                    <!--                                                <a href="./chat-users.php?id=-->
+                                                    <?//= $recentMsgItem["id"] ?><!--">-->
+                                                    <?= $recentMsgItem["firstName"] . ' ' . $recentMsgItem["lastName"] ?>
+                                                    <!--                                                </a>-->
+                                                    <span class="chat_date">
                                                     <?= $recentMsgItem["msgDate"] ?>
                                                 </span>
-                                            </h5>
-                                            <p><?= $recentMsgItem["lastMessage"] ?></p>
+                                                </h5>
+                                                <p><?= $recentMsgItem["lastMessage"] ?></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <?php
+                                }
+                            } else {
+                                ?>
+                                <div class="row mb-10" style="margin-top:10px ">
+                                    <div class="col-md-12">
+                                        <div class="alert alert-primary text-center" role="alert">
+                                            No chats found! Start chatting by clicking <strong><a
+                                                        href="./view-profiles.php" class="alert-link">"Send Message
+                                                    button"</a></strong> on profiles page!.
                                         </div>
                                     </div>
                                 </div>
-                                <?php
-                            }
-                            ?>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="mesgs">
@@ -420,7 +437,8 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                                     ?>
                                     <div class="outgoing_msg">
                                         <div class="outgoing_msg_img">
-                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>" alt="img">
+                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>"
+                                                 alt="img">
                                         </div>
                                         <div class="sent_msg">
                                             <p><?= $item["msg"] ?></p>
@@ -446,7 +464,8 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
                                     ?>
                                     <div class="incoming_msg">
                                         <div class="incoming_msg_img">
-                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>" alt="img">
+                                            <img class="rounded-circle" src="<?= $item["fromUserImgUrl"] ?>"
+                                                 alt="img">
                                         </div>
                                         <div class="received_msg">
                                             <div class="received_withd_msg">
@@ -481,12 +500,25 @@ WHERE (msg_from_user_id =:userId and msg_to_user_id=:sentToUserID) or (msg_from_
 
     </div>
 
+
     <!-- footer -->
     <?php include("./includes/footer.php") ?>
     <!-- end of footer -->
 </div>
 <script>
     $(document).ready(function () {
+
+        <?php
+        if (count($recentMsgList) > 0) {
+        ?>
+        $(".chat_list").on('click', function () {
+            let id = $(this).attr("data-id");
+            if (id) {
+                window.location.href = "./chat-users.php?id=" + id;
+            }
+        });
+        <?php }
+        ?>
         $("#sendBtn").on('click', function () {
             $("#sendMessage").click();
         });
