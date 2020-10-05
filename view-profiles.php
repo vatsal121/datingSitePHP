@@ -24,6 +24,7 @@ $ageToSearch = "18";
 $isWinkSent = false;
 $isUserAlreadyFavourited = false;
 $query = "select * from profile ";
+$profileList = [];
 if ($userId !== 0) {
     $query .= "where id <> :userId";
 }
@@ -38,14 +39,14 @@ if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
     $searchQuery = "";
 
     if (!IsVariableIsSetOrEmpty($firstName)) {
-        $searchQuery .= " firstName like '%':fname'%'";
+        $searchQuery .= " firstName like :firstName";
         $searchCount++;
     }
     if (!IsVariableIsSetOrEmpty($lastName)) {
         if ($searchCount > 0) {
             $searchQuery .= " and ";
         }
-        $searchQuery .= " lastName like '%':lname'%'";
+        $searchQuery .= " lastName like :lastName";
         $searchCount++;
     }
     if (!IsVariableIsSetOrEmpty($gender)) {
@@ -75,36 +76,37 @@ if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
         if ($userId === 0) {
             $query .= " where " . $searchQuery;
         } else {
-            $query .= " and (" . $searchQuery . ")";
+            $query .= " and " . $searchQuery . "";
         }
     }
 }
 
-$stmt = $connection->prepare($query);
+$profileListStmt = $connection->prepare($query);
 if ($userId !== 0) {
-    $stmt->bindParam(':userId', $userId);
+    $profileListStmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 }
 
 if ($isSearchCriteria === true) {
     if (!empty($firstName)) {
-        $stmt->bindParam(':fname', $firstName);
+        $newFirstNameString = "%{$firstName}%";
+        $profileListStmt->bindParam(':firstName', $newFirstNameString, PDO::PARAM_STR);
     }
     if (!empty($lastName)) {
-        $stmt->bindParam(':lname', $lastName);
+        $newLastNameString = "%{$lastName}%";
+        $profileListStmt->bindParam(':lastName', $newLastNameString, PDO::PARAM_STR);
     }
     if (!empty($gender)) {
-        $stmt->bindParam(':gender', $gender);
+        $profileListStmt->bindParam(':gender', $gender, PDO::PARAM_STR);
     }
     if (!empty($ageToSearch)) {
-        $stmt->bindParam(':age', $ageToSearch);
+        $profileListStmt->bindParam(':age', $ageToSearch, PDO::PARAM_INT);
     }
 
 
 }
-$stmt->execute();
+$profileListStmt->execute();
 //$profileList = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-$profileList = $stmt->fetchAll();
-
+$profileList = $profileListStmt->fetchAll();
 
 if (isset($_GET["sendWinkTo"])) {
     $sendWinkToId = isset($_GET["sendWinkTo"]) && !IsVariableIsSetOrEmpty($_GET["sendWinkTo"]) ? intval($_GET["sendWinkTo"]) : 0;
@@ -495,7 +497,20 @@ if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
                     </button>
                 </div>
                 <div class="modal-body">
-                    Hey! You must be a premium member to add users to your favourite list.
+                    <div class="container-fluid">
+                        <div class="row">
+                            Hey! You must be a premium member to add users to your favourite list.
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <strong>Perks of becoming premium members:</strong>
+                            <ul>
+                                <li>Have your own favourite list of users.</li>
+                                <li>See when a user sees and reads your message.</li>
+                                <li>Add/Remove users from favourite list</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
