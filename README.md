@@ -1,3 +1,12 @@
+# Dating Site PHP
+
+##Project Demo
+<div align="center" style="width: 100%">
+
+![project-demo-gif](project-demo.gif)
+
+</div>
+
 <div align="center">
     <a href="https://php.net">
         <img
@@ -7,8 +16,6 @@
     </a>
 </div>
 
-
-# Dating Site PHP
 
 Dating site is a simple dating site built using PHP.
 
