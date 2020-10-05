@@ -96,7 +96,13 @@ if (isset($_SESSION['userId'])) {
                 <td><?php echo $row1['dateCreated']; ?></td>
                 <td><a href="./favourite_list.php?id=<?php echo $_SESSION['userId']; ?>" class="btn btn-danger">Remove</a></td>
             </tr>
-        <?php } ?>
+        <?php }
+        if($row1 !== 0){
+            ?>
+            <tr class="text-center">
+                <td colspan="4"> Please add Favourite List</td>
+            </tr>
+        <?php }?>
         <?php
         while( $row = $selectStatemenet->fetch(PDO::FETCH_ASSOC) ) {
         ?>
