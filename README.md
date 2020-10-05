@@ -20,14 +20,17 @@
 </div>
 
 
-Dating site is a simple dating site built using PHP.
+### Dating site is a simple dating site built using PHP.
 
   - PHP
   - HTML5, Bootstrap 4
   - MySQL as Database
 
 ### Project Demo
-    - Video file is included in the root directory of the project.
+    - Video file is located at the root directory named "dating-site-working-demo.mp4".
+    - GIF file is located at the root directory named "project-demo.gif".
+    - Database file is located at the root directory named "datingdb.sql".
+
 
 
 ### Installation
