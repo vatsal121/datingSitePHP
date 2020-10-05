@@ -4,6 +4,12 @@
     <h3>Project Demo</h3>
 </div>
 
+<div align="center" style="width: 100%">
+
+![dating-site-working-demo-gif](dating-site-working-demo.gif)
+
+</div>
+
 <div align="center">
     <a href="https://php.net">
         <img
