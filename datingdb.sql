@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2020 at 01:29 AM
+-- Generation Time: Oct 05, 2020 at 09:04 AM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.33
 
@@ -42,31 +42,22 @@ CREATE TABLE `messages` (
 --
 
 INSERT INTO `messages` (`id`, `msg_from_user_id`, `msg`, `msg_to_user_id`, `msg_date`, `is_msg_read`, `msg_read_date`) VALUES
-(1, 13, 'Hello Vatsal', 14, '2020-10-04 01:18:23', 1, NULL),
-(2, 14, 'Hello Meet', 13, '2020-10-04 01:18:54', 1, '2020-10-04 19:23:26'),
-(3, 13, 'Hello from 13 to 15', 15, '2020-10-04 01:19:12', 0, NULL),
-(4, 15, 'Hello from 15 to 13', 13, '2020-10-04 01:19:20', 0, NULL),
-(5, 14, 'Hi I am Test User', 13, '2020-10-04 03:31:07', 1, '2020-10-04 19:23:26'),
-(6, 14, 'How are you?', 13, '2020-10-04 03:32:02', 1, '2020-10-04 19:23:26'),
-(7, 14, 'This is latest msg by vatsal to meet', 13, '2020-10-04 04:08:41', 1, '2020-10-04 19:23:26'),
-(8, 13, 'This is latest msg by meet  to vatsal', 14, '2020-10-04 04:10:44', 1, NULL),
-(9, 14, 'Hi Female Girl', 15, '2020-10-04 04:15:39', 0, NULL),
-(15, 13, 'TIme 5.33 AM', 14, '2020-10-04 05:34:04', 1, NULL),
-(16, 14, 'yes', 13, '2020-10-04 05:34:23', 1, '2020-10-04 19:23:26'),
-(17, 14, 'Are you there>', 15, '2020-10-04 06:02:52', 0, NULL),
-(18, 14, '😉', 13, '2020-10-04 06:07:34', 1, '2020-10-04 19:23:26'),
-(19, 14, '😉', 13, '2020-10-04 18:19:40', 1, '2020-10-04 19:23:26'),
-(20, 14, '😉', 16, '2020-10-04 18:20:08', 0, NULL),
-(21, 14, '😉', 13, '2020-10-04 18:31:15', 1, '2020-10-04 19:23:26'),
-(22, 14, '😉', 15, '2020-10-04 18:32:26', 0, NULL),
-(23, 14, 'Hi', 13, '2020-10-04 19:05:28', 1, '2020-10-04 19:23:26'),
-(24, 14, 'Hi Meet', 13, '2020-10-04 19:18:53', 1, '2020-10-04 19:23:26'),
-(25, 14, 'Hi Meet', 13, '2020-10-04 19:20:31', 1, '2020-10-04 19:23:26'),
-(26, 14, 'How are you?', 13, '2020-10-04 19:24:54', 1, '2020-10-04 19:26:13'),
-(27, 14, 'How are you?', 13, '2020-10-04 19:25:33', 1, '2020-10-04 19:26:13'),
-(28, 14, 'How are you?', 13, '2020-10-04 19:25:46', 1, '2020-10-04 19:26:13'),
-(29, 13, 'I am fine thanks', 14, '2020-10-04 19:26:24', 1, '2020-10-04 19:26:40'),
-(30, 14, 'Ok', 13, '2020-10-04 19:27:07', 0, NULL);
+(1, 1, 'Hello Meet', 2, '2020-10-04 23:49:58', 1, '2020-10-04 23:58:13'),
+(2, 1, 'How are you?', 2, '2020-10-04 23:50:16', 1, '2020-10-04 23:58:13'),
+(3, 1, '😉', 3, '2020-10-04 23:51:07', 0, NULL),
+(4, 1, '😉', 6, '2020-10-04 23:57:36', 1, '2020-10-05 00:29:24'),
+(5, 2, 'Hi vatsal', 1, '2020-10-04 23:58:21', 1, '2020-10-05 00:05:47'),
+(6, 2, '😉', 4, '2020-10-05 00:05:13', 0, NULL),
+(7, 6, 'Hi meet', 2, '2020-10-05 00:29:41', 1, '2020-10-05 00:53:29'),
+(8, 6, 'Wow', 2, '2020-10-05 00:29:51', 1, '2020-10-05 00:53:29'),
+(9, 6, 'Wow', 2, '2020-10-05 00:31:02', 1, '2020-10-05 00:53:29'),
+(10, 6, '😉', 3, '2020-10-05 00:31:20', 0, NULL),
+(20, 9, 'Hi', 2, '2020-10-05 01:45:04', 1, '2020-10-05 01:47:37'),
+(21, 9, '😉', 2, '2020-10-05 01:45:12', 1, '2020-10-05 01:47:37'),
+(22, 9, 'Hi', 1, '2020-10-05 01:47:10', 0, NULL),
+(23, 2, '😉', 5, '2020-10-05 01:47:31', 0, NULL),
+(24, 2, 'Hey', 9, '2020-10-05 01:47:41', 1, '2020-10-05 01:48:13'),
+(25, 2, '😉', 9, '2020-10-05 01:47:53', 1, '2020-10-05 01:48:13');
 
 -- --------------------------------------------------------
 
@@ -96,10 +87,13 @@ CREATE TABLE `profile` (
 --
 
 INSERT INTO `profile` (`id`, `email`, `password`, `firstName`, `lastName`, `city`, `bio`, `birthDate`, `gender`, `imgUrl`, `receive_notification`, `user_role`, `created_date`, `modified_date`) VALUES
-(13, 'patel00446@gmail.com', 'test', 'Meet', 'Patel', 'Montreal', '', '1995-12-01', 'male', './images/user_images/patel00446@gmail.com_login-background.jpg', 0, 'regular', '2020-09-30 18:45:17', NULL),
-(14, 'testing@gmail.com', 'test', 'Vatsal 1', 'Chauhan', 'Surat', 'i AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole dayi AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole dayi AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole dayi AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole dayi AM vatsAL\r\nI ;ike [rogramming very much and I can do programming whole day', '1995-01-12', 'male', './images/user_images/testing@gmail.com_pngfuel.com.png', 0, 'premium', '2020-10-01 17:16:30', NULL),
-(15, 'abc@gmail.com', 'test', 'Female', 'Girl', 'Quebec', '', '1999-01-22', 'female', './images/user_images/abc@gmail.com_raspberries-1426859_1920.jpg', 0, 'regular', '2020-10-01 17:25:50', NULL),
-(16, 'xyz@gmail.com', 'test1', 'C', 'V', 'Montreal', '', '1995-01-12', 'female', './images/user_images/xyz@gmail.com_salad-2756467_1920.jpg', 0, 'regular', '2020-10-03 23:53:00', NULL);
+(1, 'vatsal@gmail.com', 'test', 'Vatsal', 'Chauhan', 'Montreal', 'Hi,\r\nPassionate to code and play sports.\r\nLearning to play life by ears', '1995-01-12', 'male', './images/user_images/vatsal@gmail.com_malepic1.jpg', 1, 'premium', '2020-10-04 23:11:39', '0000-00-00 00:00:00'),
+(2, 'meet@gmail.com', 'test', 'Meet', 'Patel', 'Montreal', 'I am meet\r\nPleasure to meet you', '1998-05-05', 'male', './images/user_images/meet@gmail.com_malepic3.jpg', 1, 'premium', '2020-10-04 23:12:37', '0000-00-00 00:00:00'),
+(3, 'justin@gmail.com', 'test', 'Justin', 'Matthew', 'Montreal', '', '1990-02-05', 'male', './images/user_images/justin@gmail.com_malepic2.jpg', 0, 'regular', '2020-10-04 23:13:37', NULL),
+(4, 'janki@gmail.com', 'test', 'Janki', 'Jariwala', 'Quebec', '', '1996-12-13', 'female', './images/user_images/janki@gmail.com_femalepic1.jpg', 0, 'regular', '2020-10-04 23:14:25', NULL),
+(5, 'mariadb@gmail.com', 'test', 'Maria', 'DB', 'Hamilton', '', '1995-09-28', 'female', './images/user_images/mariadb@gmail.com_femalepic2.jpg', 0, 'regular', '2020-10-04 23:15:45', NULL),
+(6, 'angelpriya@gmail.com', 'test', 'Angel', 'Priya', 'Windsor', '', '1997-05-10', 'female', './images/user_images/angelpriya@gmail.com_femalepic3.jpg', 0, 'regular', '2020-10-04 23:16:35', NULL),
+(9, 'testing@gmail.com', 'test', 'Test', 'User', 'Calgary', 'Hi,\r\nMy name is Test User\r\nI love dating', '1996-01-28', 'male', './images/user_images/testing@gmail.com_output-onlinepngtools.png', 0, 'premium', '2020-10-05 01:44:24', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -113,6 +107,17 @@ CREATE TABLE `user_favourite_list` (
   `user_id_favourited` int(50) NOT NULL,
   `dateCreated` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `user_favourite_list`
+--
+
+INSERT INTO `user_favourite_list` (`id`, `user_id`, `user_id_favourited`, `dateCreated`) VALUES
+(9, 1, 2, '2020-10-05 00:43:56'),
+(10, 1, 5, '2020-10-05 00:43:59'),
+(11, 1, 6, '2020-10-05 00:44:01'),
+(12, 2, 4, '2020-10-05 00:54:09'),
+(20, 9, 2, '2020-10-05 01:48:37');
 
 --
 -- Indexes for dumped tables
@@ -149,19 +154,19 @@ ALTER TABLE `user_favourite_list`
 -- AUTO_INCREMENT for table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `profile`
 --
 ALTER TABLE `profile`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `user_favourite_list`
 --
 ALTER TABLE `user_favourite_list`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
