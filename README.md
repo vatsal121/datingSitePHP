@@ -35,8 +35,11 @@
 
 ### Installation
 
-  - To run the project, clone it on your computer.
-  - To add the database, Import the "datingDB.sql" file which contains pre-entered data from the root of the project directory into your phpMyAdmin or MySQL Workbench.
+  - To run the project, clone it on your computer using the following command or download the project as zip directly.
+  	
+	`git clone https://github.com/vatsal121/datingSitePHP.git`
+  
+  - To add the database, Import the "datingDB.sql" file which contains pre-entered data and test users from the root of the project directory into your phpMyAdmin or MySQL Workbench.
   - Set up your Database credentials in the database file located at "./Connector/DbConnectorPDO.php".
   - Run the project from your favourite IDE or put it in the "WWW" folder of WAMP or XAMPP. 
 
@@ -119,6 +122,9 @@ testing@gmail.com | test | premium user
 
 
 ### Task Distributions
+
+##### The functionality achieved in the following pages are fully implemented by us individually.
+
 - Vatsal Chauhan
                     
 Pages  | Folders 
@@ -130,6 +136,7 @@ become-premium-member.php  |  root Folder
 chat-users.php  |  root Folder 
 logout.php  |  root Folder 
 
+
 - Meet Patel
                     
 Pages  | Folders 
@@ -138,6 +145,8 @@ login.php  |  root Folder
 register.php  |  root Folder 
 edit-profiles.php  |  root Folder 
 favourite_list.php  |  root Folder
+
+##### The functionality achieved in the following pages are fully implemented by us both.
 
 - Tasks By Vatsal Chauhan and Meet Patel combined
                     
