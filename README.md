@@ -103,8 +103,8 @@ testing@gmail.com | test | premium user
 	- 3) Winks sent from the profile page will be also sent into the chat directly.
 
 - View-Profile : 
-	- 1) In this page user can search the another user with First Name, Last Name , Age and Gender.
-	- 2) If the user is not logged in then user can only view the other user profiles but won't be able to send wink or messages.
+	- 1) In this page user can search the another user with First Name, City , Age and Gender.
+	- 2) If the user is not logged in then user can only view the other user profiles but won't be able to send wink or messages or add them to their favourite list.
 	- 3) User can search also for another user without logged in.
 	- 4) To Chat with other user, user needs to be logged in to the website.
 	- 5) User has a premium account then user can see whether the other user has read the message or not. 
