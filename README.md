@@ -1,6 +1,8 @@
 # Dating Site PHP
 
-###Project Demo
+<div align="center">
+    <h3>Project Demo</h3>
+</div>
 
 <div align="center" style="width: 100%">
 
