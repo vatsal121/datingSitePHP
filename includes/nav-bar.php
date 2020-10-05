@@ -42,9 +42,15 @@ if (isset($_SESSION["userId"])) {
                     <li class="nav-item">
                         <a class="nav-link" href="./edit-profile.php">Edit Profile</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./favourite_list.php">Favourite List</a>
-                    </li>
+                    <?php
+                    if ($user["user_role"] === "premium") {
+                        ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./favourite_list.php">Favourite List</a>
+                        </li>
+                        <?php
+                    }
+                    ?>
                     <li class="nav-item">
                         <a class="nav-link" href="./logout.php">Logout</a>
                     </li>
