@@ -16,6 +16,26 @@ if (isset($_SESSION['userId'])) {
     $selectStatemenet = $connection->prepare($queryForSelectProfile);
     $selectStatemenet->execute();
     $count = $selectStatemenet->rowCount();
+
+    $queryForSelect = "SELECT * from user_favourite_list ufl INNER JOIN profile pl on ufl.user_id_favourited = pl.id WHERE ufl.user_id = '$userId'";
+    $SelectUserStatement = $connection->prepare($queryForSelect);
+    $SelectUserStatement->execute();
+    $count1 = $SelectUserStatement->rowCount();
+
+    if(isset($_GET['id'])){
+        echo "hello";
+        $userIdd = $_GET['id'];
+        $deleteQuery = "DELETE FROM user_favourite_list WHERE user_id = '$userIdd'";
+        $deleteUserStatement = $connection->prepare($deleteQuery);
+        $deleteUserStatement->execute();
+        $count2 = $deleteUserStatement->rowCount();
+        var_dump($count2);
+        if($count2 === 0){
+            array_push($errors, 'Cant Delete Please try again');
+        }else{
+            header("Location: ./favourite_list.php");
+        }
+    }
 }
 
 ?>
@@ -35,7 +55,7 @@ if (isset($_SESSION['userId'])) {
     <?php
     include("./includes/nav-bar.php")
     ?>
-    <br>
+
     <div class="row mt-5">
         <?php
         // if any errors are there display them
@@ -67,6 +87,16 @@ if (isset($_SESSION['userId'])) {
         </tr>
         </thead>
         <tbody>
+        <?php
+        while( $row1 = $SelectUserStatement->fetch(PDO::FETCH_ASSOC) ) {
+            ?>
+            <tr>
+                <td><?php echo $row1['firstName']; ?></td>
+                <td><?php echo $row1['lastName']; ?></td>
+                <td><?php echo $row1['dateCreated']; ?></td>
+                <td><a href="./favourite_list.php?id=<?php echo $_SESSION['userId']; ?>" class="btn btn-danger">Remove</a></td>
+            </tr>
+        <?php } ?>
         <?php
         while( $row = $selectStatemenet->fetch(PDO::FETCH_ASSOC) ) {
         ?>
