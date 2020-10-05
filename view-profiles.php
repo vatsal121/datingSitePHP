@@ -331,7 +331,7 @@ if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
             foreach ($profileList as $profile) {
                 $counter++;
                 if ($counter === 1) {
-                    echo '<div class="row">';
+                    echo '<div class="row mb-10">';
                 }
                 ?>
                 <div class="col-md-3">
