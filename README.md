@@ -1,4 +1,4 @@
-# Dating Site PHP
+# Dating Site PHP by Vatsal Chauhan and Meet Patel
 
 <div align="center">
     <h3>Project Demo</h3>
@@ -36,9 +36,8 @@
 ### Installation
 
   - To run the project, clone it on your computer.
-  - Create a Database with name "datingDB" in phpMyAdmin or MySQL Workbench.
-  - Import the datingDB.sql file which contains pre-entered data from the root of the project directory into your phpMyAdmin or MySQL Workbench.
-  - Set up your Database credentials in the file located at "./Connector/DbConnectorPDO.php".
+  - To add the database, Import the "datingDB.sql" file which contains pre-entered data from the root of the project directory into your phpMyAdmin or MySQL Workbench.
+  - Set up your Database credentials in the database file located at "./Connector/DbConnectorPDO.php".
   - Run the project from your favourite IDE or put it in the "WWW" folder of WAMP or XAMPP. 
 
                     
@@ -68,6 +67,7 @@ testing@gmail.com | test | premium user
 	- 2) In this page user has to give his Email-id ,First name ,Last name ,Password ,City ,Birth Of date ,Gender and Image.
 	- 3) All the field in this is compulsory
 	- 4) There is Password and Confirm password field  both the field value matches then it will register or else it will show an error
+			
 			Example : 
 			Email-Id : testing@gmail.com
 			First Name : Test
@@ -78,12 +78,14 @@ testing@gmail.com | test | premium user
 			Date of Birth: 05/12/1995
 			Image: url
 			Gender: male
-
+			
+	- 5) When a user selects an image, a preview will be shown of the image to the user.
 
 - Login Page : 
 	- 1) This Page has a form with validation
 	- 2) If user enter wrong password then it will show an error
 	- 3) Successful Email id and Password will give access to the website	
+	      
 	      Example: 
 		  Email-Id : testing@gmail.com
 		  Password: test 
@@ -93,31 +95,31 @@ testing@gmail.com | test | premium user
 	-  2) Once validated user will become premium user
 
 - Chat User Page : 
-	- 1) Logged in user can chat to end-user 
-	- 2) If user has a premium membership then user can see whether end-user has read the msg or not
-	- 3) If user has a premium membership then user can also be able to send winks
+	- 1) Logged in user can chat to other users. 
+	- 2) If user has a premium membership then user can see whether other user has read the messasge or not
+	- 3) Winks sent from the profile page will be also sent into the chat directly.
 
 - View-Profile : 
-	- 1) In this page user can search the another user with First Name, Last Name , Age and Gender
-	- 2) If the user is not logged in then user can only view the another user name, image and detail
-	- 3) User can search also for another user without logged in
-	- 4) To Chat with other user, user needs to be logged in to the website
-	- 5) User has a premium account then user can see whether the end-user has read the msg or not. 
-	- 6) While having a premium account they can also add another user to favourite list.
+	- 1) In this page user can search the another user with First Name, Last Name , Age and Gender.
+	- 2) If the user is not logged in then user can only view the other user profiles but won't be able to send wink or messages.
+	- 3) User can search also for another user without logged in.
+	- 4) To Chat with other user, user needs to be logged in to the website.
+	- 5) User has a premium account then user can see whether the other user has read the message or not. 
+	- 6) While having a premium account they can also add other users to their own favourite list and can also see who added them.
 	- 7) User can send wink to other users directly.
 
 - Edit-Profile : 
-	- 1) In this page user can see every single detail of his and can update his detail
-	- 2) Here user can also update their image.
+	- 1) In this page, user can see and update their details.
+	- 2) Here user can also update their profile image.
 
 - Favourite Page: 
-	- 1) In this page user can able to see whom user has marked favourite or other user marked them favourite
+	- 1) In this page user can able to see whom they have marked favourite or other users that marked them favourite.
 	- 2) User can remove the person from that list.
 
 
 
 ### Task Distributions
--	Vatsal Chauhan
+- Vatsal Chauhan
                     
 Pages  | Folders 
 ------------- | -------------
@@ -128,7 +130,7 @@ become-premium-member.php  |  root Folder
 chat-users.php  |  root Folder 
 logout.php  |  root Folder 
 
--	Meet Patel
+- Meet Patel
                     
 Pages  | Folders 
 ------------- | -------------
@@ -137,7 +139,7 @@ register.php  |  root Folder
 edit-profiles.php  |  root Folder 
 favourite_list.php  |  root Folder
 
--	Tasks By Vatsal Chauhan and Meet Patel combined
+- Tasks By Vatsal Chauhan and Meet Patel combined
                     
 Pages  | Folders 
 ------------- | -------------
@@ -150,4 +152,3 @@ index.php | root Folder
 
 ### Database Designed by Vatsal Chauhan and Meet Patel
 
-### End
