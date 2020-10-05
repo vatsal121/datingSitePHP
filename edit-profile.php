@@ -177,7 +177,7 @@ if (isset($_SESSION['userId'])) {
                     <div class="col-md-12">
                         <form action="edit-profile.php" method="post" enctype="multipart/form-data">
                             <br>
-                            <input accept="image/*" name="newImageFileUploadControl" type="file" class=" mb-10">
+                            <input accept="image/*" name="newImageFileUploadControl" type="file" class=" mb-10" required>
                             <input type="submit" name="uploadImage" class="form-control btn btn-light"
                                    value="Upload Image"/>
                         </form>
