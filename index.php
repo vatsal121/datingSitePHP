@@ -54,8 +54,8 @@ session_start();
                             <p class="mt-4 mb-4">
                                 30% of Canada adults say they have used a dating site or app. A majority of online
                                 daters
-                                say their overall experience was positive, but many users – particularly younger women –
-                                report being harassed or sent explicit messages on these platforms</p>
+                                say their overall experience was positive, particularly younger women finding their
+                                exact matches on this platform</p>
                         </div>
                     </div>
 
@@ -157,11 +157,11 @@ session_start();
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
                                         <blockquote class="blockquote">
-                                            <small>The vibe here is bright and very optimistic. Clients love to visit us
-                                                here and every day we make new friends and contacts with other
-                                                start-ups. Being a a member is our secret super power.</small>
-
-                                            <footer class="blockquote-footer mt-2">Timothy Wilson, CTO</footer>
+                                            <small>
+                                                We found this site to help young and elder people to find their exact
+                                                match to date and fill their life with joy!
+                                            </small>
+                                            <footer class="blockquote-footer mt-2">Vatsal and Meet, CEO</footer>
                                         </blockquote>
                                     </div>
                                 </div>
@@ -171,11 +171,9 @@ session_start();
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
                                         <blockquote class="blockquote">
-                                            <small>I've been a memeber for over 3 years. We have always been welcomed by
-                                                friendly faces and helpful staff. This co-working space has everything
-                                                we need from Wi-Fi to fresh and delicious coffee.</small>
-
-                                            <footer class="blockquote-footer mt-2">Ziva Stark, CEO</footer>
+                                            <small>I've been a member for over 3 years. This is by far the best
+                                                site.</small>
+                                            <footer class="blockquote-footer mt-2">Angel Priya</footer>
                                         </blockquote>
                                     </div>
                                 </div>
@@ -185,11 +183,10 @@ session_start();
                                 <div class="row justify-content-center">
                                     <div class="col-md-6">
                                         <blockquote class="blockquote">
-                                            <small>I joined since its opening and I couldn't have found a better working
-                                                space. Being a member is so inspiring and I love the work environment:
-                                                spacious, bright and full of entrepreneurs like me!</small>
-
-                                            <footer class="blockquote-footer mt-2">Teresa Swanson, CEO</footer>
+                                            <small>I joined since its opening and I couldn't have found a better dating
+                                                space. Being a member is so inspiring and I love to date with young
+                                                bright and full of entrepreneurs like me!</small>
+                                            <footer class="blockquote-footer mt-2">Maria DB</footer>
                                         </blockquote>
                                     </div>
                                 </div>
