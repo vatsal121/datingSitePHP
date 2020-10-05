@@ -45,9 +45,9 @@ if (isset($_POST['Submit'])) {
                     move_uploaded_file($file_tmp, $imageURL);
                     $image_uploaded = true;
                     try {
-                        $query = "INSERT INTO datingdb.profile(email,password,firstName,lastName,city,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$city','$dateOfBirth','$gender','$imageURL','regular')";
-                        $stmt = $connection->prepare($query);
-                        $stmt->execute();
+                        $insertQueryForRegister = "INSERT INTO datingdb.profile(email,password,firstName,lastName,city,birthDate,gender,imgUrl,user_role) values('$email','$password','$firstName','$lastName','$city','$dateOfBirth','$gender','$imageURL','regular')";
+                        $insertQueryForRegisterstmt = $connection->prepare($insertQueryForRegister);
+                        $insertQueryForRegisterstmt->execute();
                         $registerSuccessfully = true;
                     } catch (PDOException $exception) {
                         throw $exception;

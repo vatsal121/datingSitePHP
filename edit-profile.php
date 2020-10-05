@@ -23,10 +23,10 @@ $image_uploaded = false;
 $imageURL = "./images/user_images/";
 function getUserFromUserId($userId, $connection)
 {
-    $query = "SELECT * from profile WHERE id = '$userId'";
-    $stmt = $connection->prepare($query);
-    $stmt->execute();
-    return $stmt->fetch(PDO::FETCH_ASSOC);
+    $selectQuery = "SELECT * from profile WHERE id = '$userId'";
+    $selectQuerystmt = $connection->prepare($selectQuery);
+    $selectQuerystmt->execute();
+    return $selectQuerystmt->fetch(PDO::FETCH_ASSOC);
 }
 
 if (isset($_SESSION['userId'])) {
@@ -60,10 +60,10 @@ if (isset($_SESSION['userId'])) {
         $ConfirmPassword = $_POST['confirmPassword'];
         if ($password === $oldpassword) {
             if ($NewPassword === $ConfirmPassword) {
-                $query3 = "UPDATE profile SET password = '$NewPassword' WHERE id = '$id'";
-                $stmt3 = $connection->prepare($query3);
-                $stmt3->execute();
-                $count3 = $stmt3->rowCount();
+                $updateQueryForPassword = "UPDATE profile SET password = '$NewPassword' WHERE id = '$id'";
+                $updateQueryForPasswordstmt = $connection->prepare($updateQueryForPassword);
+                $updateQueryForPasswordstmt->execute();
+                $updateQueryForPasswordcount = $updateQueryForPasswordstmt->rowCount();
             } else {
                 array_push($errors, 'Couldnt match the New Password and Confirm Password');
             }
@@ -90,10 +90,10 @@ if (isset($_SESSION['userId'])) {
         move_uploaded_file($file_tmp, $imageURL);
         $image_uploaded = true;
         try {
-            $query2 = "UPDATE profile SET imgUrl = '$imageURL' WHERE id = '$id'";
-            $stmt2 = $connection->prepare($query2);
-            $stmt2->execute();
-            $count2 = $stmt2->rowCount();
+            $updateQueryForImg = "UPDATE profile SET imgUrl = '$imageURL' WHERE id = '$id'";
+            $updateQueryForImgstmt = $connection->prepare($updateQueryForImg);
+            $updateQueryForImgstmt->execute();
+            $updateQueryForImgcount = $updateQueryForImgstmt->rowCount();
         } catch (PDOException $exception) {
             throw $exception;
         }
@@ -114,11 +114,9 @@ if (isset($_SESSION['userId'])) {
         }else{
             $notification = 0;
         }
-
-
-        $query1 = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', city = '$city', birthDate = '$birthDate', gender = '$gender', receive_notification = '$notification' , modified_date = 'NOW()'  WHERE id = '$id'";
-        $stmt1 = $connection->prepare($query1);
-        $stmt1->execute();
+        $updateQueryForTable = "UPDATE profile SET email = '$email', firstName = '$firstName', lastName = '$lastName', bio = '$bio', city = '$city', birthDate = '$birthDate', gender = '$gender', receive_notification = '$notification' , modified_date = 'NOW()'  WHERE id = '$id'";
+        $updateQueryForTablestmt1 = $connection->prepare($updateQueryForTable);
+        $updateQueryForTablestmt1->execute();
 
         $rowGetNewUserData = getUserFromUserId($userId, $connection);
         if (!IsVariableIsSetOrEmpty($rowGetNewUserData)) {
