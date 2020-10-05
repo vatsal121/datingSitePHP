@@ -400,7 +400,6 @@ if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6 col-sm-12">
-
                                         <a href="./view-profiles.php?sendWinkTo=<?= $profile["id"] ?>"
                                            name="SendWink" class="btn btn-info w-100">Send wink</a>
 
@@ -417,7 +416,7 @@ if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
                                             <?php
                                         } else {
                                             ?>
-                                            <a class="btn btn-danger"
+                                            <a class="btn btn-danger w-100"
                                                href="./view-profiles.php?addToFavouriteId=<?= $profile["id"] ?>">
                                                 Favourite
                                             </a>
