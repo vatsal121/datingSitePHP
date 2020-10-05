@@ -22,6 +22,7 @@ $lastName = "";
 $gender = "";
 $ageToSearch = "18";
 $isWinkSent = false;
+$isUserAlreadyFavourited = false;
 $query = "select * from profile ";
 if ($userId !== 0) {
     $query .= "where id <> :userId";
@@ -137,6 +138,30 @@ if (isset($_GET["sendWinkTo"])) {
         $isWinkSent = true;
     }
 }
+
+if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
+    $addToFavouriteUserId = isset($_GET["addToFavouriteId"]) && !IsVariableIsSetOrEmpty($_GET["addToFavouriteId"]) ? intval($_GET["addToFavouriteId"]) : 0;
+    if ($addToFavouriteUserId !== 0) {
+        $queryGetAlreadyFavRecord = "Select * from user_favourite_list WHERE user_id = :userId AND user_id_favourited = :addFavourtieUserId";
+        $queryGetAlreadyFavRecordStmt = $connection->prepare($queryGetAlreadyFavRecord);
+        $queryGetAlreadyFavRecordStmt->bindParam(':userId', $userId);
+        $queryGetAlreadyFavRecordStmt->bindParam(':addFavourtieUserId', $addToFavouriteUserId);
+        $queryGetAlreadyFavRecordStmt->execute();
+        $getAlreadyFavRecordList = $queryGetAlreadyFavRecordStmt->fetchAll();
+        if (!isset($getAlreadyFavRecordList) || IsVariableIsSetOrEmpty($getAlreadyFavRecordList) || count($getAlreadyFavRecordList) <= 0) {
+
+            $addUserToFavQuery = "INSERT INTO user_favourite_list (user_id,user_id_favourited,dateCreated) 
+                                    VALUES (:userId,:userIdFavourited,NOW())";
+            $addUserToFavStmt = $connection->prepare($addUserToFavQuery);
+            $addUserToFavStmt->bindParam(':userId', $userId);
+            $addUserToFavStmt->bindParam(':userIdFavourited', $addToFavouriteUserId);
+            $addUserToFavStmt->execute();
+//            $isUserAlreadyFavourited = true;
+        } else {
+            $isUserAlreadyFavourited = true;
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -164,6 +189,32 @@ if (isset($_GET["sendWinkTo"])) {
                     Wink (😉) sent to user successfully! Click <strong><a
                                 href="./chat-users.php?id=<?= $_GET["sendWinkTo"] ?>">here</a></strong> to start
                     chatting.
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+
+    <?php
+    if (isset($_GET["addToFavouriteId"])) {
+        $classToAdd = "";
+        $msg = "";
+        if ($isUserAlreadyFavourited === false) {
+            $classToAdd = "alert-success";
+            $msg = "Successfully added user to favourite list!.";
+        } else {
+            $classToAdd = "alert-danger";
+            $msg = "User already added to favourite list!.";
+        }
+        ?>
+        <div class="row mt-10 mb-10">
+            <div class="col-md-12">
+                <div class="alert <?= $classToAdd ?> alert-dismissible fade show" role="alert">
+                    <?= $msg ?>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -458,7 +509,7 @@ if (isset($_GET["sendWinkTo"])) {
     <script>
         $(document).ready(function () {
             <?php
-            if ($isWinkSent && isset($_GET["sendWinkTo"])) {
+            if ($isWinkSent && isset($_GET["sendWinkTo"]) || isset($_GET["addToFavouriteId"]) ) {
             ?>
             setTimeout(function () {
                 $(".alert").alert('close');
