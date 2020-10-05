@@ -100,7 +100,7 @@ if (isset($_SESSION['userId'])) {
         if($row1 !== 0){
             ?>
             <tr class="text-center">
-                <td colspan="4"> Please add Favourite List</td>
+                <td colspan="4"> No user found in favourite list</td>
             </tr>
         <?php }?>
         <?php
