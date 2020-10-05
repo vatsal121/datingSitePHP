@@ -30,11 +30,10 @@ if (isset($_SESSION['userId'])) {
 
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
-        $deleteQuery = "DELETE FROM user_favourite_list WHERE id = '$id'";
+        $deleteQuery = "DELETE FROM user_favourite_list WHERE user_id_favourited = '$id'";
         $deleteUserStatement = $connection->prepare($deleteQuery);
         $deleteUserStatement->execute();
         $count2 = $deleteUserStatement->rowCount();
-        var_dump($count2);
         if ($count2 === 0) {
             array_push($errors, 'Cant Delete Please try again');
         } else {
