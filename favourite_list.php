@@ -29,8 +29,8 @@ if (isset($_SESSION['userId'])) {
     $count1 = $SelectUserStatement->rowCount();
 
     if (isset($_GET['id'])) {
-        $userIdd = $_GET['id'];
-        $deleteQuery = "DELETE FROM user_favourite_list WHERE user_id = '$userIdd'";
+        $id = $_GET['id'];
+        $deleteQuery = "DELETE FROM user_favourite_list WHERE id = '$id'";
         $deleteUserStatement = $connection->prepare($deleteQuery);
         $deleteUserStatement->execute();
         $count2 = $deleteUserStatement->rowCount();
@@ -99,7 +99,7 @@ if (isset($_SESSION['userId'])) {
                 <td><?php echo $item['firstName']; ?></td>
                 <td><?php echo $item['lastName']; ?></td>
                 <td><?php echo $item['dateCreated']; ?></td>
-                <td><a href="./favourite_list.php?id=<?php echo $_SESSION['userId']; ?>"
+                <td><a href="./favourite_list.php?id=<?php echo $item['id']; ?>"
                        class="btn btn-danger">Remove</a></td>
             </tr>
         <?php }
