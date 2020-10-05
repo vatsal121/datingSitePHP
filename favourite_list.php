@@ -9,30 +9,35 @@ $firstName = '';
 $lastName = '';
 $currentTime = '';
 $errors = array();
+$userIFavourited = [];
+$userThatFavouritedMe = [];
 if (isset($_SESSION['userId'])) {
     $userId = $_SESSION['userId'];
     $users = $_SESSION['user'];
     $queryForSelectProfile = "SELECT * from user_favourite_list ufl INNER JOIN profile pl on ufl.user_id = pl.id WHERE ufl.user_id_favourited = '$userId'";
     $selectStatemenet = $connection->prepare($queryForSelectProfile);
     $selectStatemenet->execute();
+    $userThatFavouritedMe = $selectStatemenet->fetchAll();
     $count = $selectStatemenet->rowCount();
+
 
     $queryForSelect = "SELECT * from user_favourite_list ufl INNER JOIN profile pl on ufl.user_id_favourited = pl.id WHERE ufl.user_id = '$userId'";
     $SelectUserStatement = $connection->prepare($queryForSelect);
     $SelectUserStatement->execute();
+    $userIFavourited = $SelectUserStatement->fetchAll();
+
     $count1 = $SelectUserStatement->rowCount();
 
-    if(isset($_GET['id'])){
-        echo "hello";
+    if (isset($_GET['id'])) {
         $userIdd = $_GET['id'];
         $deleteQuery = "DELETE FROM user_favourite_list WHERE user_id = '$userIdd'";
         $deleteUserStatement = $connection->prepare($deleteQuery);
         $deleteUserStatement->execute();
         $count2 = $deleteUserStatement->rowCount();
         var_dump($count2);
-        if($count2 === 0){
+        if ($count2 === 0) {
             array_push($errors, 'Cant Delete Please try again');
-        }else{
+        } else {
             header("Location: ./favourite_list.php");
         }
     }
@@ -74,10 +79,10 @@ if (isset($_SESSION['userId'])) {
     </div>
     <div class="row mb-10">
         <div class="col-md-12">
-           <h2 class="text-center">Favourite List</h2>
+            <h2 class="text-center">Favourite List</h2>
         </div>
     </div>
-    <table class="table table-bordered table-hover table-striped" >
+    <table class="table table-bordered table-hover table-striped">
         <thead class="thead-dark">
         <tr>
             <th scope="col">FirstName</th>
@@ -88,31 +93,36 @@ if (isset($_SESSION['userId'])) {
         </thead>
         <tbody>
         <?php
-        while( $row1 = $SelectUserStatement->fetch(PDO::FETCH_ASSOC) ) {
+        foreach ($userIFavourited as $item) {
             ?>
             <tr>
-                <td><?php echo $row1['firstName']; ?></td>
-                <td><?php echo $row1['lastName']; ?></td>
-                <td><?php echo $row1['dateCreated']; ?></td>
-                <td><a href="./favourite_list.php?id=<?php echo $_SESSION['userId']; ?>" class="btn btn-danger">Remove</a></td>
+                <td><?php echo $item['firstName']; ?></td>
+                <td><?php echo $item['lastName']; ?></td>
+                <td><?php echo $item['dateCreated']; ?></td>
+                <td><a href="./favourite_list.php?id=<?php echo $_SESSION['userId']; ?>"
+                       class="btn btn-danger">Remove</a></td>
             </tr>
         <?php }
-        if($row1 !== 0){
+        ?>
+        <?php
+        foreach ($userThatFavouritedMe as $item1) {
+            ?>
+            <tr>
+                <td><?php echo $item1['firstName']; ?></td>
+                <td><?php echo $item1['lastName']; ?></td>
+                <td><?php echo $item1['dateCreated']; ?></td>
+                <td></td>
+            </tr>
+        <?php }
+        if (count($userThatFavouritedMe) <= 0 && count($userIFavourited) <= 0) {
             ?>
             <tr class="text-center">
                 <td colspan="4"> No user found in favourite list</td>
             </tr>
-        <?php }?>
-        <?php
-        while( $row = $selectStatemenet->fetch(PDO::FETCH_ASSOC) ) {
+        <?php }
         ?>
-        <tr>
-            <td><?php echo $row['firstName']; ?></td>
-            <td><?php echo $row['lastName']; ?></td>
-            <td><?php echo $row['dateCreated']; ?></td>
-            <td></td>
-        </tr>
-        <?php } ?>
+
+
         </tbody>
     </table>
     <!-- footer -->
