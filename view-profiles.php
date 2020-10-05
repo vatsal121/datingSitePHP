@@ -108,6 +108,26 @@ $profileList = $stmt->fetchAll();
 if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
     $sendWinkToId = isset($_GET["sendWinkTo"]) && !IsVariableIsSetOrEmpty($_GET["sendWinkTo"]) ? intval($_GET["sendWinkTo"]) : 0;
     if ($sendWinkToId !== 0) {
+        $queryGetLastMessage = "SELECT * 
+                            FROM messages 
+                            WHERE msg_from_user_id=:sendWinkToId and msg_to_user_id=:userId and is_msg_read=0
+                            order by msg_date desc limit 1";
+        $getLastMessageStmt = $connection->prepare($queryGetLastMessage);
+        $getLastMessageStmt->bindParam(':sendWinkToId', $sendWinkToId);
+        $getLastMessageStmt->bindParam(':userId', $userId);
+        $getLastMessageStmt->execute();
+        $getLastMessageList = $getLastMessageStmt->fetchAll();
+        if (isset($getLastMessageList) && !IsVariableIsSetOrEmpty($getLastMessageList) && count($getLastMessageList) > 0) {
+            $getFirstRow=$getLastMessageList[0];
+            if(!IsVariableIsSetOrEmpty($getFirstRow)){
+                $updateAllMsgReadQuery = "UPDATE messages set is_msg_read=1,msg_read_date=NOW() where msg_from_user_id=:sentToUserID and msg_to_user_id=:userId and is_msg_read=0";
+                $updateAllMsgRead = $connection->prepare($updateAllMsgReadQuery);
+                $updateAllMsgRead->bindParam(':sentToUserID', $sendWinkToId);
+                $updateAllMsgRead->bindParam(':userId', $userId);
+                $updateAllMsgRead->execute();
+            }
+        }
+
         $insertMessageQuery = "INSERT INTO messages(msg_from_user_id,msg,msg_to_user_id,msg_date,is_msg_read) 
                                values(:userId,'😉',:sendWinkToId,NOW(),0)";
         $insertStmt = $connection->prepare($insertMessageQuery);
@@ -436,13 +456,13 @@ if (isset($_POST["SendWink"]) && !IsVariableIsSetOrEmpty($_POST["SendWink"])) {
     <script>
         $(document).ready(function () {
             <?php
-                if ($isWinkSent && isset($_GET["sendWinkTo"])) {
+            if ($isWinkSent && isset($_GET["sendWinkTo"])) {
             ?>
-                setTimeout(function () {
-                    $(".alert").alert('close');
-                }, 5000);
+            setTimeout(function () {
+                $(".alert").alert('close');
+            }, 5000);
             <?php
-                }
+            }
             ?>
             $("#ageInputId").on('input', function () {
                 if (parseInt($("#ageInputId").val()) < 18) {
