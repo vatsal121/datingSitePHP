@@ -14,14 +14,26 @@ $userThatFavouritedMe = [];
 if (isset($_SESSION['userId'])) {
     $userId = $_SESSION['userId'];
     $users = $_SESSION['user'];
-    $queryForSelectProfile = "SELECT * from user_favourite_list ufl INNER JOIN profile pl on ufl.user_id = pl.id WHERE ufl.user_id_favourited = '$userId'";
+    $queryForSelectProfile = "SELECT ufl.id as favouriteId
+                           ,firstName
+                           ,lastName
+                           ,dateCreated 
+                            from user_favourite_list ufl 
+                            INNER JOIN profile pl on ufl.user_id = pl.id 
+                            WHERE ufl.user_id_favourited = '$userId'";
     $selectStatemenet = $connection->prepare($queryForSelectProfile);
     $selectStatemenet->execute();
     $userThatFavouritedMe = $selectStatemenet->fetchAll();
     $count = $selectStatemenet->rowCount();
 
 
-    $queryForSelect = "SELECT * from user_favourite_list ufl INNER JOIN profile pl on ufl.user_id_favourited = pl.id WHERE ufl.user_id = '$userId'";
+    $queryForSelect = "SELECT ufl.id as favouriteId
+                       ,firstName
+                       ,lastName
+                       ,dateCreated 
+                       from user_favourite_list ufl 
+                       INNER JOIN profile pl on ufl.user_id_favourited = pl.id 
+                       WHERE ufl.user_id = '$userId'";
     $SelectUserStatement = $connection->prepare($queryForSelect);
     $SelectUserStatement->execute();
     $userIFavourited = $SelectUserStatement->fetchAll();
@@ -30,7 +42,7 @@ if (isset($_SESSION['userId'])) {
 
     if (isset($_GET['id'])) {
         $id = $_GET['id'];
-        $deleteQuery = "DELETE FROM user_favourite_list WHERE user_id_favourited = '$id'";
+        $deleteQuery = "DELETE FROM user_favourite_list WHERE id =$id";
         $deleteUserStatement = $connection->prepare($deleteQuery);
         $deleteUserStatement->execute();
         $count2 = $deleteUserStatement->rowCount();
@@ -98,7 +110,7 @@ if (isset($_SESSION['userId'])) {
                 <td><?php echo $item['firstName']; ?></td>
                 <td><?php echo $item['lastName']; ?></td>
                 <td><?php echo $item['dateCreated']; ?></td>
-                <td><a href="./favourite_list.php?id=<?php echo $item['id']; ?>"
+                <td><a href="./favourite_list.php?id=<?php echo $item['favouriteId']; ?>"
                        class="btn btn-danger">Remove</a></td>
             </tr>
         <?php }
