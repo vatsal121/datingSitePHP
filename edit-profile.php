@@ -209,18 +209,18 @@ if (isset($_SESSION['userId'])) {
                             <hr class="colorgraph">
                             <div class="form-label-group">
                                 <input type="text" name="firstName" id="firstName" class="form-control"
-                                       placeholder="First Name" value="<?php echo $firstName; ?>">
+                                       placeholder="First Name" value="<?php echo $firstName; ?>" required>
                                 <label for="firstName">First Name</label>
                             </div>
                             <div class="form-label-group">
                                 <input type="text" id="lastName" name="lastName" class="form-control"
-                                       placeholder="Last Name" value="<?php echo $lastName; ?>">
+                                       placeholder="Last Name" value="<?php echo $lastName; ?>" required>
                                 <label for="lastName">Last Name</label>
                             </div>
                             <div class="form-label-group">
                                 <input type="email" name="email" id="inputEmail" class="form-control"
                                        placeholder="Email address" pattern="^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$"
-                                       value="<?php echo $email; ?>">
+                                       value="<?php echo $email; ?>" required>
                                 <label for="inputEmail">Email address</label>
                             </div>
                             <div class="form-label-group">
@@ -240,12 +240,12 @@ if (isset($_SESSION['userId'])) {
                             </div>
                             <div class="form-label-group">
                                 <input type="type" id="city" name="city" class="form-control"
-                                       value="<?php echo $city; ?>">
+                                       value="<?php echo $city; ?>" required>
                                 <label for="city">City</label>
                             </div>
                             <div class="form-label-group">
                                 <input type="date" id="birthDate" name="birthDate" class="form-control"
-                                       value="<?php echo $birthDate; ?>">
+                                       value="<?php echo $birthDate; ?>" required>
                                 <label for="birthDate">Birth Date</label>
                             </div>
 
@@ -254,7 +254,7 @@ if (isset($_SESSION['userId'])) {
                                     <input class="form-check-input" type="radio" name="gender" id="gender"
                                            value="male" <?php if ($gender === "male") {
                                         echo "checked";
-                                    } ?>>
+                                    } ?> required>
                                     <label class="form-check-label" for="male">Male</label>
                                 </div>
                                 <div class="form-check form-check-inline">
