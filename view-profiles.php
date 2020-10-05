@@ -18,7 +18,7 @@ $userObj = $userId !== 0 && !IsVariableIsSetOrEmpty($_SESSION["user"]) ? $_SESSI
 
 $isSearchCriteria = false;
 $firstName = "";
-$lastName = "";
+$city = "";
 $gender = "";
 $ageToSearch = "18";
 $isWinkSent = false;
@@ -33,7 +33,7 @@ if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
 
     $searchCount = 0;
     $firstName = $_POST["firstName"];
-    $lastName = $_POST["lastName"];
+    $city = $_POST["city"];
     $gender = $_POST["gender"];
     $ageToSearch = $_POST["age"];
     $searchQuery = "";
@@ -42,11 +42,11 @@ if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
         $searchQuery .= " firstName like :firstName";
         $searchCount++;
     }
-    if (!IsVariableIsSetOrEmpty($lastName)) {
+    if (!IsVariableIsSetOrEmpty($city)) {
         if ($searchCount > 0) {
             $searchQuery .= " and ";
         }
-        $searchQuery .= " lastName like :lastName";
+        $searchQuery .= " city like :city";
         $searchCount++;
     }
     if (!IsVariableIsSetOrEmpty($gender)) {
@@ -66,8 +66,6 @@ if (isset($_POST["Search"]) && !IsVariableIsSetOrEmpty($_POST["Search"])) {
         } else {
             $searchQuery .= " (YEAR(CURDATE()) - YEAR(birthDate)) BETWEEN  18 and :age";
         }
-
-
         $searchCount++;
     }
 
@@ -91,9 +89,9 @@ if ($isSearchCriteria === true) {
         $newFirstNameString = "%{$firstName}%";
         $profileListStmt->bindParam(':firstName', $newFirstNameString, PDO::PARAM_STR);
     }
-    if (!empty($lastName)) {
-        $newLastNameString = "%{$lastName}%";
-        $profileListStmt->bindParam(':lastName', $newLastNameString, PDO::PARAM_STR);
+    if (!empty($city)) {
+        $newCityString = "%{$city}%";
+        $profileListStmt->bindParam(':city', $newCityString, PDO::PARAM_STR);
     }
     if (!empty($gender)) {
         $profileListStmt->bindParam(':gender', $gender, PDO::PARAM_STR);
@@ -101,8 +99,6 @@ if ($isSearchCriteria === true) {
     if (!empty($ageToSearch)) {
         $profileListStmt->bindParam(':age', $ageToSearch, PDO::PARAM_INT);
     }
-
-
 }
 $profileListStmt->execute();
 //$profileList = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -246,9 +242,9 @@ if (isset($_GET['addToFavouriteId']) && $userObj["user_role"] === "premium") {
                         </div>
                         <div class="col">
                             <div class="form-group">
-                                <label for="lastName">Search by last name</label>
-                                <input name="lastName" id="lastName" type="text" class="form-control"
-                                       placeholder="Last name" value="<?= $lastName ?>">
+                                <label for="lastName">Search by city</label>
+                                <input name="city" id="city" type="text" class="form-control"
+                                       placeholder="City" value="<?= $city ?>">
                             </div>
                         </div>
                     </div>
