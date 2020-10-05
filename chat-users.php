@@ -29,25 +29,28 @@ if ($userId === 0 || (!isset($_GET["id"]) && !isset($msgToUserId))) {
 
 if ($msgToUserId !== 0) {
 
-    $recentMsgQuery = "select *
-from (
-SELECT PROFILE
-    .id,
-    PROFILE.firstName,
-    PROFILE.lastName,
-    PROFILE.imgUrl,
+    $recentMsgQuery = "SELECT
+    *
+FROM
     (
-    SELECT
-        msg
-    FROM
-        messages
-    WHERE
-        messages.msg_from_user_id = PROFILE.id OR messages.msg_to_user_id = PROFILE.id
-    ORDER BY
-        id
-    DESC
-LIMIT 1
-) AS lastMessage,(
+    SELECT PROFILE
+        .id,
+        PROFILE.firstName,
+        PROFILE.lastName,
+        PROFILE.imgUrl,
+        (
+        SELECT
+            msg
+        FROM
+            messages
+        WHERE
+            messages.msg_from_user_id = PROFILE.id OR messages.msg_to_user_id = PROFILE.id
+        ORDER BY
+            id
+        DESC
+    LIMIT 1
+    ) AS lastMessage,
+    (
     SELECT
         msg_date
     FROM
@@ -60,9 +63,27 @@ LIMIT 1
 LIMIT 1
 ) AS msgDate
 FROM PROFILE
-where id <> :userId 
+WHERE
+    id <> :userId
 ) X
-WHERE lastMessage is not null";
+LEFT JOIN (
+    Select DISTINCT ids 
+    from (
+            select msg_from_user_id as ids
+            from messages
+            where msg_from_user_id =:userId  or msg_to_user_id=:userId
+            UNION
+            select msg_to_user_id as ids
+            from messages
+            where msg_from_user_id =:userId  or msg_to_user_id=:userId
+		)uniqueIdList
+		where ids <> :userId
+   )IdList on X.id=IDList.ids
+WHERE
+	ids IS NOT NULL 
+    AND
+    lastMessage IS NOT NULL
+    ORDER BY msgDate desc";
     $recentQueryStmt = $connection->prepare($recentMsgQuery);
     $recentQueryStmt->bindParam(':userId', $userId);
     $recentQueryStmt->execute();

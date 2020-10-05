@@ -213,7 +213,7 @@ session_start();
         </div>
 
         <div class="row mr-0">
-            <section id="sec-contact" class="sec-contact pt-5 pb-5 w-100">
+            <section id="sec-contact" class="sec-contact pt-5 pb-5pt-5 pb-5 w-100">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-md-10 col-lg-7">
